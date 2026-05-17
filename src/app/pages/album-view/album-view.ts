@@ -25,6 +25,9 @@ export class AlbumView implements OnInit {
   ownedTotal = 0;
   missingTotal = 0;
 
+  currentPage = 1;
+  itemsPerPage = 20;
+
   ngOnInit(): void {
     const albumId = this.route.snapshot.paramMap.get('id');
 
@@ -55,5 +58,39 @@ export class AlbumView implements OnInit {
 
   trackBySticker(index: number, sticker: any) {
     return sticker.id;
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.stickers.length / this.itemsPerPage);
+  }
+
+  get paginatedStickers() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+
+    return this.stickers.slice(start, end);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  goToPage(page: number) {
+    this.currentPage = page;
+  }
+
+  get pages() {
+    return Array.from(
+      { length: this.totalPages },
+      (_, index) => index + 1,
+    );
   }
 }

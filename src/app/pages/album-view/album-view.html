@@ -4,7 +4,7 @@
 
 <div *ngIf="!loading && album" class="text-white p-4 md:p-10">
 
-  <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 md:p-8 mb-10">
+  <section class="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 md:p-8 mb-10 shadow-2xl">
 
     <div class="flex flex-col lg:flex-row gap-8">
 
@@ -17,11 +17,11 @@
         </h1>
 
         <p class="text-zinc-400 text-lg mb-6">
-          Progresso do álbum
+          Seu álbum digital colecionável.
         </p>
 
         <div class="w-full bg-zinc-800 rounded-full h-5 mb-4 overflow-hidden">
-          <div class="bg-emerald-500 h-5 rounded-full transition-all" [style.width.%]="progress"></div>
+          <div class="bg-emerald-500 h-5 rounded-full transition-all duration-700" [style.width.%]="progress"></div>
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
@@ -37,7 +37,7 @@
           </div>
 
           <div class="bg-zinc-900 rounded-2xl p-4">
-            <p class="text-zinc-400 text-sm">Possui</p>
+            <p class="text-zinc-400 text-sm">Coladas</p>
             <p class="text-2xl font-bold text-blue-400">{{ ownedTotal }}</p>
           </div>
 
@@ -52,69 +52,92 @@
 
     </div>
 
-  </div>
+  </section>
 
-  <h2 class="text-3xl font-bold mb-6">
-    Páginas do Álbum
-  </h2>
+  <section class="album-paper rounded-[2rem] p-5 md:p-10 shadow-2xl">
 
-  <div class="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 md:p-10 shadow-2xl">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold text-zinc-900">
+          Página do Álbum
+        </h2>
+
+        <div class="flex flex-wrap items-center gap-3 mt-6 mb-8">
+
+          <button class="album-page-button" (click)="previousPage()" [disabled]="currentPage === 1">
+            Anterior
+          </button>
+
+          <button *ngFor="let page of pages" class="album-page-number" [class.active-page]="page === currentPage"
+            (click)="goToPage(page)">
+            {{ page }}
+          </button>
+
+          <button class="album-page-button" (click)="nextPage()" [disabled]="currentPage === totalPages">
+            Próxima
+          </button>
+
+        </div>
+
+
+
+        <p class="text-zinc-600">
+          Cada espaço representa uma figurinha numerada.
+        </p>
+      </div>
+    </div>
+
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-      <div *ngFor="let sticker of stickers; trackBy: trackBySticker"
-        class="relative aspect-[3/4] rounded-2xl overflow-hidden border-2 transition-all duration-500 bg-zinc-900"
-        [ngClass]="{
-    'border-emerald-500 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-100': sticker.owned,
-    'border-dashed border-zinc-700 opacity-80': !sticker.owned
-  }">
 
-        <div class="absolute top-3 left-3 z-10 bg-black/70 backdrop-blur px-3 py-1 rounded-full text-xs font-bold">
+      <div *ngFor="let sticker of paginatedStickers; trackBy: trackBySticker" class="sticker-slot" [ngClass]="{
+          'sticker-owned': sticker.owned,
+          'sticker-empty': !sticker.owned
+        }">
+
+        <div class="sticker-number">
           Nº {{ sticker.number }}
         </div>
 
-        <ng-container *ngIf="sticker.owned; else emptySlot">
+        <ng-container *ngIf="sticker.owned; else emptySticker">
 
-          <img [src]="sticker.imageUrl" class="w-full h-full object-cover animate-sticker-in" />
+          <img [src]="sticker.imageUrl" class="sticker-image" />
 
-          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
-            <h3 class="font-bold text-white text-sm">
+          <div class="sticker-info">
+            <h3>
               {{ sticker.name }}
             </h3>
 
-            <p class="text-xs text-zinc-300">
+            <span [ngClass]="{
+                'rarity-common': sticker.rarity === 'COMMON',
+                'rarity-rare': sticker.rarity === 'RARE',
+                'rarity-epic': sticker.rarity === 'EPIC',
+                'rarity-legendary': sticker.rarity === 'LEGENDARY'
+              }">
               {{ sticker.rarity }}
-            </p>
+            </span>
           </div>
 
-          <div *ngIf="sticker.quantityDuplicate > 0"
-            class="absolute top-3 right-3 bg-yellow-400 text-black rounded-full px-2 py-1 text-xs font-bold">
+          <div *ngIf="sticker.quantityDuplicate > 0" class="duplicate-badge">
             +{{ sticker.quantityDuplicate }}
           </div>
 
         </ng-container>
 
-        <ng-template #emptySlot>
-          <div
-            class="w-full h-full flex flex-col items-center justify-center text-zinc-600 bg-[radial-gradient(circle_at_center,#3f3f46_1px,transparent_1px)] [background-size:18px_18px]">
-
-            <div
-              class="w-20 h-20 rounded-full border-2 border-dashed border-zinc-600 flex items-center justify-center mb-4">
-              <span class="text-4xl font-bold">?</span>
+        <ng-template #emptySticker>
+          <div class="empty-content">
+            <div class="empty-icon">
+              ?
             </div>
 
-            <p class="text-sm font-bold">
-              Espaço para colar
-            </p>
-
-            <p class="text-xs mt-1">
-              Figurinha Nº {{ sticker.number }}
-            </p>
-
+            <p>Espaço para colar</p>
+            <small>Figurinha Nº {{ sticker.number }}</small>
           </div>
         </ng-template>
 
       </div>
 
     </div>
-  </div>
+
+  </section>
 
 </div>

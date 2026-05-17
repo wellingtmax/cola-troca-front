@@ -6,7 +6,6 @@ import { Store } from './pages/store/store';
 import { Library } from './pages/library/library';
 import { Duplicates } from './pages/duplicates/duplicates';
 import { Profile } from './pages/profile/profile';
-import { AlbumDetail } from './pages/album-detail/album-detail';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { authGuard } from './core/guards/auth-guard';
@@ -60,11 +59,6 @@ export const routes: Routes = [
       {
         path: 'perfil',
         component: Profile,
-      },
-
-      {
-        path: 'album/:id',
-        component: AlbumDetail,
       },
       
       {
