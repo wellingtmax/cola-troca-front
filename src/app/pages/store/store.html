@@ -1,0 +1,20 @@
+<div class="text-white p-10">
+
+  <h1 class="text-5xl font-bold mb-6">
+    Loja de Álbuns
+  </h1>
+
+  <p class="text-zinc-400 text-xl mb-10">
+    Explore os melhores álbuns digitais.
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+
+    <app-album-card
+      *ngFor="let album of albums"
+      [album]="album"
+    ></app-album-card>
+
+  </div>
+
+</div>

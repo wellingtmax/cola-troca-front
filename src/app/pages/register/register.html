@@ -1,0 +1,50 @@
+<div class="min-h-screen bg-zinc-950 flex items-center justify-center p-6 text-white">
+    <div class="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
+        <h1 class="text-4xl font-bold text-emerald-400 mb-2">
+            Criar conta
+        </h1>
+
+        <p class="text-zinc-400 mb-8">
+            Comece sua coleção no Cola&Troca.
+        </p>
+
+        <form class="space-y-5" (ngSubmit)="register()">
+            <input
+            [(ngModel)]="name"
+            name="name"
+            type="text"
+            placeholder="Nome"
+            class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-emerald-500"
+            />
+
+            <input
+            [(ngModel)]="email"
+            name="email"
+            type="email"
+            placeholder="E-mail"
+            class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-emerald-500"
+            />
+
+            <input
+            [(ngModel)]="password"
+            name="password"
+            type="password"
+            placeholder="Senha"
+            class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-emerald-500"
+            />
+            <button
+            type="submit"
+            class="w-full bg-emerald-500 hover:bg-emerald-600 rounded-2xl py-4 font-bold transition"
+            >
+                {{ loading ? 'Cadastro...' : 'Cadastrar' }}
+            </button>
+        </form>
+
+        <p class="text-zinc-400 text-center mt-6">
+            Já tem conta?
+            <a routerLink="/login" class="text-emerald-400 font-bold">
+                Entrar
+            </a>
+        </p>
+    </div>
+</div>

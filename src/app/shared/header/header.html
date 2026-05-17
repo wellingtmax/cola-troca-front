@@ -1,0 +1,65 @@
+<header class="w-full h-20 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between px-6 md:px-8">
+
+  <div class="ml-12 md:ml-0">
+
+    <h2 class="text-xl md:text-2xl font-bold text-white">
+      Bem-vindo ao Cola&Troca
+    </h2>
+
+    <p class="text-zinc-400 text-sm">
+      Plataforma de álbuns digitais
+    </p>
+
+  </div>
+
+  <div class="flex items-center gap-4">
+
+    <!-- COINS -->
+
+    <div class="hidden md:flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 rounded-2xl">
+
+      <mat-icon class="text-yellow-400">
+        paid
+      </mat-icon>
+
+      <div>
+
+        <p class="text-xs text-yellow-200 uppercase tracking-widest">
+          Coins
+        </p>
+
+        <p class="font-bold text-yellow-400">
+          {{ user?.coins || 0 }}
+        </p>
+
+      </div>
+
+    </div>
+
+    <!-- USER -->
+
+    <div class="flex items-center gap-3">
+
+      <div class="w-11 h-11 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white text-lg shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+
+        {{ getInitialLetter() }}
+
+      </div>
+
+      <div class="hidden md:block">
+
+        <p class="font-bold text-white">
+          {{ user?.name || 'Usuário' }}
+        </p>
+
+        <p class="text-xs text-zinc-400">
+          Colecionador
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
