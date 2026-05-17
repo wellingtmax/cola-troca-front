@@ -1,16 +1,13 @@
-@keyframes revealCard {
-
-  from {
-    opacity: 0;
-    transform: translateY(40px) scale(0.8) rotateY(90deg);
+@keyframes holoMove {
+  0% {
+    transform: translateX(-100%) rotate(15deg);
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotateY(0);
+  100% {
+    transform: translateX(100%) rotate(15deg);
   }
 }
 
-.card-reveal {
-  animation: revealCard 0.6s ease-out;
+.animate-holo {
+  animation: holoMove 2.2s infinite linear;
 }

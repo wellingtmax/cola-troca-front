@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 
@@ -18,21 +18,18 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:3000/api/auth';
 
+  userSignal = signal<User | null>(this.getUser());
+
   login(dto: LoginDto): Observable<ApiResponse<AuthResponse>> {
     return this.http.post<ApiResponse<AuthResponse>>(
       `${this.apiUrl}/Login`,
       dto,
     ).pipe(
       tap((response) => {
-        localStorage.setItem(
-          'token',
-          response.data.access_token,
-        );
+        localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        localStorage.setItem(
-          'user',
-          JSON.stringify(response.data.user),
-        );
+        this.userSignal.set(response.data.user as User);
       }),
     );
   }
@@ -43,15 +40,10 @@ export class AuthService {
       dto,
     ).pipe(
       tap((response) => {
-        localStorage.setItem(
-          'token',
-          response.data.access_token,
-        );
+        localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
 
-        localStorage.setItem(
-          'user',
-          JSON.stringify(response.data.user),
-        );
+        this.userSignal.set(response.data.user as User);
       }),
     );
   }
@@ -61,10 +53,9 @@ export class AuthService {
       `${this.apiUrl}/profile`,
     ).pipe(
       tap((response) => {
-        localStorage.setItem(
-          'user',
-          JSON.stringify(response.data),
-        );
+        localStorage.setItem('user', JSON.stringify(response.data));
+
+        this.userSignal.set(response.data);
       }),
     );
   }
@@ -72,9 +63,11 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
+    this.userSignal.set(null);
   }
 
-  getToken() {
+  getToken(): string | null {
     return localStorage.getItem('token');
   }
 

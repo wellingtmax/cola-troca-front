@@ -1,10 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 
 import { AuthService } from '../../core/services/auth';
-
-import { User } from '../../interfaces/user.interface';
 
 @Component({
   selector: 'app-header',
@@ -17,38 +15,21 @@ import { User } from '../../interfaces/user.interface';
   styleUrl: './header.css',
 })
 export class Header implements OnInit {
-
   private readonly authService = inject(AuthService);
 
-  user: User | null = null;
+  user = computed(() => this.authService.userSignal());
 
   ngOnInit(): void {
-
-    this.loadProfile();
-  }
-
-  loadProfile() {
-
-    this.authService.profile().subscribe({
-
-      next: (response) => {
-
-        this.user = response.data;
-      },
-
-      error: () => {
-
-        this.user = this.authService.getUser();
-      },
-    });
+    this.authService.profile().subscribe();
   }
 
   getInitialLetter(): string {
+    const user = this.user();
 
-    if (!this.user?.name) {
+    if (!user?.name) {
       return 'U';
     }
 
-    return this.user.name.charAt(0).toUpperCase();
+    return user.name.charAt(0).toUpperCase();
   }
 }

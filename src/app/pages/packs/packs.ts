@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { PackService } from '../../core/services/pack';
 import { AlertService } from '../../core/services/alert';
 import { AlbumService } from '../../core/services/album';
+import { AuthService } from '../../core/services/auth';
 
 import { Album } from '../../interfaces/album.interface';
 
@@ -27,6 +28,7 @@ export class Packs {
   private readonly packService = inject(PackService);
   private readonly alertService = inject(AlertService);
   private readonly albumService = inject(AlbumService);
+  private readonly authService = inject(AuthService)
 
   albums: Album[] = [];
   selectedAlbumId = '';
@@ -79,7 +81,8 @@ export class Packs {
           this.loading = false;
 
           this.revealCards();
-
+          this.authService.profile().subscribe();
+          
           this.alertService.success(
             'Pacote aberto!',
             `${response.data.total} figurinha(s) recebida(s).`,
@@ -158,4 +161,10 @@ export class Packs {
       },
     });
   }
+
+  onImageError(event: Event) {
+  const img = event.target as HTMLImageElement;
+
+  img.src = 'https://placehold.co/512x768/18181b/ffffff?text=Sem+Imagem';
+}
 }

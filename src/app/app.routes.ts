@@ -11,6 +11,7 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { authGuard } from './core/guards/auth-guard';
 import { Packs } from './pages/packs/packs';
+import { AlbumView } from './pages/album-view/album-view';
 
 export const routes: Routes = [
 
@@ -69,7 +70,12 @@ export const routes: Routes = [
       {
         path: 'packs',
         component: Packs,
-      }
+      },
+
+      {
+        path: 'album/:id',
+        component: AlbumView,
+      },
     ],
   },
 

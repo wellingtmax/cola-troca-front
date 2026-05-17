@@ -2,7 +2,7 @@
 
   <img
     [src]="album.coverUrl"
-    class="w-full h-64 object-cover"
+    class="w-full h-64 object-cover bg-zinc-800"
   />
 
   <div class="p-6">
@@ -15,15 +15,30 @@
       Álbum oficial da coleção.
     </p>
 
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-3">
 
       <span class="text-3xl font-bold text-emerald-400">
         R$ {{ album.price }}
       </span>
 
-      <a [routerLink]="['/album', album.id]"
-        class="bg-emerald-500 hover:bg-emerald-600 px-5 py-3 rounded-xl text-white font-bold transition"
-      >Ver Álbum</a>
+      <div class="flex gap-2">
+
+        <a
+          [routerLink]="['/album', album.id]"
+          class="bg-zinc-800 hover:bg-zinc-700 px-4 py-3 rounded-xl text-white font-bold transition"
+        >
+          Ver
+        </a>
+
+        <button
+          *ngIf="showBuyButton"
+          class="bg-emerald-500 hover:bg-emerald-600 px-4 py-3 rounded-xl text-white font-bold transition"
+          (click)="onBuyAlbum()"
+        >
+          Comprar
+        </button>
+
+      </div>
 
     </div>
 
