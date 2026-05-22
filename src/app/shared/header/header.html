@@ -1,58 +1,60 @@
-<header class="w-full h-20 bg-zinc-950 border-b border-zinc-800 flex items-center justify-between px-6 md:px-8">
+<header class="header-container">
 
-  <div class="ml-12 md:ml-0">
+  <div class="header-left">
 
-    <h2 class="text-xl md:text-2xl font-bold text-white">
+    <h2 class="logo-title">
       Bem-vindo ao Cola&Troca
     </h2>
 
-    <p class="text-zinc-400 text-sm">
+    <p class="logo-subtitle">
       Plataforma de álbuns digitais
     </p>
 
   </div>
 
-  <div class="flex items-center gap-4">
+  <div class="header-right">
 
-    <!-- COINS -->
+    <div class="coins-box">
 
-    <div class="hidden md:flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 px-4 py-2 rounded-2xl">
-
-      <mat-icon class="text-yellow-400">
+      <mat-icon>
         paid
       </mat-icon>
 
       <div>
-
-        <p class="text-xs text-yellow-200 uppercase tracking-widest">
+        <p class="coins-label">
           Coins
         </p>
 
-        <p class="font-bold text-yellow-400">
+        <p class="coins-value">
           {{ user()?.coins || 0 }}
         </p>
-
       </div>
 
     </div>
 
-    <!-- USER -->
+    <div class="profile-box">
 
-    <div class="flex items-center gap-3">
+      <div class="avatar">
 
-      <div class="w-11 h-11 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-white text-lg shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+        <img *ngIf="user()?.avatarUrl" [src]="user()?.avatarUrl" alt="Avatar" />
 
-        {{ getInitialLetter() }}
+        <span *ngIf="!user()?.avatarUrl">
+          {{
+          user()?.nickname?.[0]
+          || user()?.name?.[0]
+          || 'U'
+          }}
+        </span>
 
       </div>
 
-      <div class="hidden md:block">
+      <div class="profile-info">
 
-        <p class="font-bold text-white">
-          {{ user()?.name || 'Usuário' }}
+        <p class="profile-name">
+          {{ user()?.nickname || user()?.name || 'Usuário' }}
         </p>
 
-        <p class="text-xs text-zinc-400">
+        <p class="profile-role">
           Colecionador
         </p>
 

@@ -1,0 +1,312 @@
+<div class="stickers-page">
+
+  <div class="stickers-header">
+
+    <div>
+      <h1>Minhas Figurinhas</h1>
+      <p>Gerencie seu inventário, favoritas, repetidas e figurinhas ainda não coladas.</p>
+    </div>
+
+    <div class="stickers-count">
+      {{ filteredStickers.length }} figurinhas
+    </div>
+
+  </div>
+
+  <div class="stickers-filters">
+
+    <div class="filter-field wide">
+      <mat-icon>search</mat-icon>
+
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Buscar figurinha, álbum ou número..."
+      />
+    </div>
+
+    <div class="filter-field">
+      <mat-icon>collections_bookmark</mat-icon>
+
+      <select [(ngModel)]="selectedAlbum">
+        <option value="">Todos os álbuns</option>
+
+        <option
+          *ngFor="let album of albums"
+          [value]="album"
+        >
+          {{ album }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-field">
+      <mat-icon>diamond</mat-icon>
+
+      <select [(ngModel)]="selectedRarity">
+        <option value="">Todas as raridades</option>
+
+        <option
+          *ngFor="let rarity of rarities"
+          [value]="rarity"
+        >
+          {{ rarity }}
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="quick-filters">
+
+    <button
+      [class.active]="onlyDuplicates"
+      (click)="onlyDuplicates = !onlyDuplicates"
+    >
+      <mat-icon>sync_alt</mat-icon>
+      Repetidas
+    </button>
+
+    <button
+      [class.active]="onlyFavorites"
+      (click)="onlyFavorites = !onlyFavorites"
+    >
+      <mat-icon>star</mat-icon>
+      Favoritas
+    </button>
+
+    <button
+      [class.active]="onlyMissing"
+      (click)="onlyMissing = !onlyMissing"
+    >
+      <mat-icon>push_pin</mat-icon>
+      Não coladas
+    </button>
+
+  </div>
+
+  <div *ngIf="loading" class="stickers-loading">
+    Carregando figurinhas...
+  </div>
+
+  <div
+    *ngIf="!loading && filteredStickers.length === 0"
+    class="stickers-empty"
+  >
+    <mat-icon>style</mat-icon>
+
+    <h2>Nenhuma figurinha encontrada</h2>
+
+    <p>
+      Abra packs ou ajuste os filtros para visualizar suas figurinhas.
+    </p>
+  </div>
+
+  <div
+    *ngIf="!loading && filteredStickers.length > 0"
+    class="stickers-grid"
+  >
+
+    <div
+  *ngFor="let sticker of filteredStickers"
+  class="sticker-card"
+  (click)="openStickerDetails(sticker)"
+  [ngClass]="{
+    'rarity-common': sticker.rarity === 'COMMON',
+    'rarity-rare': sticker.rarity === 'RARE',
+    'rarity-epic': sticker.rarity === 'EPIC',
+    'rarity-legendary': sticker.rarity === 'LEGENDARY'
+  }"
+>
+
+      <button
+        class="favorite-button"
+        [class.active]="sticker.favorite"
+        (click)="toggleFavorite(sticker); $event.stopPropagation()"
+      >
+        <mat-icon>
+          {{ sticker.favorite ? 'star' : 'star_border' }}
+        </mat-icon>
+      </button>
+
+      <div
+        *ngIf="sticker.rarity === 'EPIC' || sticker.rarity === 'LEGENDARY'"
+        class="holo-effect"
+      ></div>
+
+      <img
+        [src]="sticker.imageUrl"
+        [alt]="sticker.name"
+        class="sticker-image"
+      />
+
+      <div class="sticker-info">
+
+        <div class="sticker-top">
+
+          <span class="sticker-number">
+            Nº {{ sticker.number }}
+          </span>
+
+          <span class="rarity-badge">
+            {{ sticker.rarity }}
+          </span>
+
+        </div>
+
+        <h2>
+          {{ sticker.name }}
+        </h2>
+
+        <p>
+          {{ sticker.albumName }}
+        </p>
+
+        <div class="sticker-badges">
+
+          <span>
+            x{{ sticker.quantityOwned }}
+          </span>
+
+          <span *ngIf="sticker.quantityDuplicate > 0" class="duplicate">
+            🔁 +{{ sticker.quantityDuplicate }}
+          </span>
+
+          <span
+            *ngIf="!sticker.isPlaced"
+            class="not-placed"
+          >
+            📕 Não colada
+          </span>
+
+          <span
+            *ngIf="sticker.isPlaced"
+            class="placed"
+          >
+            ✅ Colada
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+  <!-- =====================modal=============== -->
+  <div
+  *ngIf="selectedSticker"
+  class="sticker-modal-overlay"
+  (click)="closeStickerDetails()"
+>
+  <div
+    class="sticker-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="sticker-modal-image-box">
+
+      <img
+        [src]="selectedSticker.imageUrl"
+        class="sticker-modal-img"
+      />
+
+    </div>
+
+    <div class="sticker-modal-info">
+
+      <span class="modal-rarity">
+        {{ selectedSticker.rarity }}
+      </span>
+
+      <h2>
+        {{ selectedSticker.name }}
+      </h2>
+
+      <div class="modal-details">
+
+        <p>
+          <strong>Número:</strong>
+          Nº {{ selectedSticker.number }}
+        </p>
+
+        <p>
+          <strong>Álbum:</strong>
+          {{ selectedSticker.albumName }}
+        </p>
+
+        <p>
+          <strong>Quantidade:</strong>
+          {{ selectedSticker.quantityOwned }}
+        </p>
+
+        <p>
+          <strong>Repetidas:</strong>
+          {{ selectedSticker.quantityDuplicate }}
+        </p>
+
+        <p>
+          <strong>Status:</strong>
+          {{ selectedSticker.isPlaced ? 'Colada no álbum' : 'Não colada' }}
+        </p>
+
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          class="modal-action favorite"
+          [class.active]="selectedSticker.favorite"
+          (click)="toggleFavorite(selectedSticker)"
+        >
+          <mat-icon>
+            {{ selectedSticker.favorite ? 'star' : 'star_border' }}
+          </mat-icon>
+
+          {{ selectedSticker.favorite ? 'Favorita' : 'Favoritar' }}
+        </button>
+
+        <a
+          class="modal-action album"
+          [routerLink]="['/album', selectedSticker.albumId]"
+        >
+          <mat-icon>collections_bookmark</mat-icon>
+          Ver Álbum
+        </a>
+
+        <button
+          class="modal-action trade"
+          disabled
+        >
+          <mat-icon>swap_horiz</mat-icon>
+          Trocar
+        </button>
+
+        <button
+          class="modal-action paste"
+          [disabled]="selectedSticker.isPlaced"
+          (click)="placeSticker(selectedSticker)"
+        >
+          <mat-icon>push_pin</mat-icon>
+          {{
+            selectedSticker.isPlaced ? 'Já colada' : 'Colar'
+          }}
+        </button>
+
+      </div>
+
+      <button
+        class="modal-close"
+        (click)="closeStickerDetails()"
+      >
+        Fechar
+      </button>
+
+    </div>
+
+  </div>
+</div>
+  <!-- =============================================== -->
+</div>
+
+

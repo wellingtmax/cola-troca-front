@@ -1,17 +1,124 @@
-<div class="text-white p-10">
+<div class="store-page">
 
-  <h1 class="text-5xl font-bold mb-6">
-    Loja de Álbuns
-  </h1>
+  <div class="store-header">
 
-  <p class="text-zinc-400 text-xl mb-10">
-    Explore os melhores álbuns digitais.
-  </p>
+    <h1>
+      Loja de Álbuns
+    </h1>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+    <p>
+      Explore os melhores álbuns digitais colecionáveis.
+    </p>
 
-    <app-album-card *ngFor="let album of albums" [album]="album" [showBuyButton]="true"
-      (buyAlbum)="buyAlbum($event)"></app-album-card>
+  </div>
+
+  <!-- =======================buscar -->
+  <div class="w-full mb-10">
+
+    <div class="
+      grid
+      grid-cols-1
+      md:grid-cols-2
+      xl:grid-cols-4
+      gap-4
+    ">
+
+      <!-- BUSCA -->
+
+      <div class="relative xl:col-span-2">
+
+        <mat-icon class="
+          absolute
+          left-4
+          top-1/2
+          -translate-y-1/2
+          text-zinc-500
+        ">
+          search
+        </mat-icon>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar álbum..."
+          class="store-filter-input"
+        />
+
+      </div>
+
+      <!-- EMPRESA -->
+
+      <div class="relative">
+
+        <mat-icon class="
+          absolute
+          left-4
+          top-1/2
+          -translate-y-1/2
+          text-zinc-500
+          pointer-events-none
+        ">
+          business
+        </mat-icon>
+
+        <select
+        [(ngModel)]="selectedCompany"
+        class="store-filter-input"
+          >
+
+          <option value="">
+            Todas as empresas
+          </option>
+
+          <option *ngFor="let company of companies" [value]="company">
+            {{ company }}
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- CATEGORIA -->
+
+      <div class="relative">
+
+        <mat-icon class="
+          absolute
+          left-4
+          top-1/2
+          -translate-y-1/2
+          text-zinc-500
+          pointer-events-none
+        ">
+          category
+        </mat-icon>
+
+        <select
+          [(ngModel)]="selectedCategory"
+          class="store-filter-input"
+        >
+
+          <option value="">
+            Todas as categorias
+          </option>
+
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+  <!-- ============================== -->
+
+  <div class="albums-grid">
+
+    <app-album-card *ngFor="let album of filteredAlbums" [album]="album" [showBuyButton]="true" (buyAlbum)="buyAlbum($event)">
+    </app-album-card>
 
   </div>
 

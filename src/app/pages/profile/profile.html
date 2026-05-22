@@ -1,1 +1,215 @@
-<p>profile works!</p>
+<div class="profile-page">
+
+  <div *ngIf="loading" class="profile-loading">
+    Carregando perfil...
+  </div>
+
+  <div *ngIf="!loading">
+
+    <section class="profile-hero">
+
+      <div class="profile-avatar-box">
+        <img
+          *ngIf="profile.avatarUrl"
+          [src]="profile.avatarUrl"
+          class="profile-avatar"
+        />
+
+        <div *ngIf="!profile.avatarUrl" class="profile-avatar fallback">
+          {{ profile.name?.charAt(0) || 'U' }}
+        </div>
+      </div>
+
+      <div>
+        <h1>
+          {{ profile.nickname || profile.name }}
+        </h1>
+
+        <p>
+          {{ profile.email }}
+        </p>
+
+        <span class="coins-badge">
+          <mat-icon>paid</mat-icon>
+          {{ profile.coins }} coins
+        </span>
+      </div>
+
+    </section>
+
+    <section class="profile-stats">
+
+      <div>
+        <span>Álbuns</span>
+        <strong>{{ dashboard.totalAlbums || 0 }}</strong>
+      </div>
+
+      <div>
+        <span>Figurinhas</span>
+        <strong>{{ dashboard.totalStickers || 0 }}</strong>
+      </div>
+
+      <div>
+        <span>Repetidas</span>
+        <strong>{{ dashboard.totalDuplicates || 0 }}</strong>
+      </div>
+
+      <div>
+        <span>Pendentes</span>
+        <strong>{{ dashboard.pendingToPlace || 0 }}</strong>
+      </div>
+
+    </section>
+
+    <section class="profile-tabs">
+
+      <button
+        [class.active]="activeTab === 'perfil'"
+        (click)="activeTab = 'perfil'"
+      >
+        Perfil
+      </button>
+
+      <button
+        [class.active]="activeTab === 'endereco'"
+        (click)="activeTab = 'endereco'"
+      >
+        Endereço
+      </button>
+
+      <button
+        [class.active]="activeTab === 'avatar'"
+        (click)="activeTab = 'avatar'"
+      >
+        Avatar
+      </button>
+
+      <button
+        [class.active]="activeTab === 'seguranca'"
+        (click)="activeTab = 'seguranca'"
+      >
+        Segurança
+      </button>
+
+    </section>
+
+    <section class="profile-panel">
+
+      <div *ngIf="activeTab === 'perfil'" class="profile-form">
+
+        <h2>Dados do Perfil</h2>
+
+        <label>
+          Nome completo
+          <input [(ngModel)]="profile.name" />
+        </label>
+
+        <label>
+          Nickname
+          <input [(ngModel)]="profile.nickname" />
+        </label>
+
+        <label>
+          Email de login
+          <input [(ngModel)]="profile.email" disabled />
+        </label>
+
+        <label>
+          Telefone
+          <input [(ngModel)]="profile.phone" />
+        </label>
+
+        <label>
+          Bio
+          <textarea [(ngModel)]="profile.bio"></textarea>
+        </label>
+
+        <button (click)="updateProfile()">
+          Salvar Perfil
+        </button>
+
+      </div>
+
+      <div *ngIf="activeTab === 'endereco'" class="profile-form">
+
+        <h2>Endereço para Entrega</h2>
+
+        <div class="form-grid">
+
+          <label>
+            CEP
+            <input [(ngModel)]="profile.zipCode" />
+          </label>
+
+          <label>
+            Estado
+            <input [(ngModel)]="profile.state" />
+          </label>
+
+          <label>
+            Cidade
+            <input [(ngModel)]="profile.city" />
+          </label>
+
+          <label>
+            Bairro
+            <input [(ngModel)]="profile.district" />
+          </label>
+
+          <label class="wide">
+            Rua
+            <input [(ngModel)]="profile.street" />
+          </label>
+
+          <label>
+            Número
+            <input [(ngModel)]="profile.number" />
+          </label>
+
+          <label>
+            Complemento
+            <input [(ngModel)]="profile.complement" />
+          </label>
+
+        </div>
+
+        <button (click)="updateAddress()">
+          Salvar Endereço
+        </button>
+
+      </div>
+
+      <div *ngIf="activeTab === 'avatar'" class="profile-form">
+
+        <h2>Escolha seu Avatar</h2>
+
+        <div class="avatar-grid">
+
+          <button
+            *ngFor="let avatar of avatars"
+            class="avatar-option"
+            [class.selected]="profile.avatarUrl === avatar"
+            (click)="selectAvatar(avatar)"
+          >
+            <img [src]="avatar" />
+          </button>
+
+        </div>
+
+      </div>
+
+      <div *ngIf="activeTab === 'seguranca'" class="profile-form">
+
+        <h2>Segurança</h2>
+
+        <p class="muted">
+          Alteração de senha será implementada na próxima etapa.
+        </p>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

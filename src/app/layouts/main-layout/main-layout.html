@@ -1,34 +1,37 @@
-<div class="min-h-screen bg-zinc-900 text-white">
+<div class="app-shell app-bg">
 
   <button
-    class="fixed top-4 left-4 z-50 md:hidden bg-emerald-500 p-3 rounded-xl shadow-lg"
+    class="sidebar-toggle"
+    [class.sidebar-toggle-open]="sidebarOpen"
     (click)="toggleSidebar()"
+    aria-label="Abrir menu"
   >
-    ☰
+    <mat-icon>
+      {{ sidebarOpen ? 'close' : 'menu' }}
+    </mat-icon>
   </button>
 
+  <app-sidebar
+    class="sidebar-drawer"
+    [class.sidebar-open]="sidebarOpen"
+    [class.sidebar-closed]="!sidebarOpen"
+  ></app-sidebar>
+
   <div
-    class="fixed inset-0 bg-black/60 z-30 md:hidden"
     *ngIf="sidebarOpen"
+    class="sidebar-backdrop"
     (click)="closeSidebar()"
   ></div>
 
-  <aside
-    class="fixed top-0 left-0 z-40 h-screen w-72 transform transition-transform duration-300 md:translate-x-0"
-    [class.-translate-x-full]="!sidebarOpen"
-  >
-    <app-sidebar></app-sidebar>
-  </aside>
-
-  <div class="md:ml-72 min-h-screen flex flex-col">
+  <main class="main-content app-bg">
 
     <app-header></app-header>
 
-    <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+    <div class="page-content">
       <router-outlet></router-outlet>
-    </main>
+    </div>
 
-  </div>
+  </main>
 
   <app-alert-container></app-alert-container>
 

@@ -4,17 +4,20 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 
 import { Store } from './pages/store/store';
 import { Library } from './pages/library/library';
-import { Duplicates } from './pages/duplicates/duplicates';
 import { Profile } from './pages/profile/profile';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { authGuard } from './core/guards/auth-guard';
 import { Packs } from './pages/packs/packs';
 import { AlbumView } from './pages/album-view/album-view';
+import { ChatGlobal } from './pages/chat-global/chat-global';
+import { Bafo } from './pages/bafo/bafo';
+import { Trocas } from './pages/trocas/trocas';
+import { Stickers } from './pages/stickers/stickers';
 
 export const routes: Routes = [
 
- {
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
@@ -27,7 +30,7 @@ export const routes: Routes = [
     path: 'register',
     component: Register,
   },
-  
+
   {
     path: '',
     component: MainLayout,
@@ -52,15 +55,15 @@ export const routes: Routes = [
       },
 
       {
-        path: 'repetidas',
-        component: Duplicates,
+        path: 'figurinhas',
+        component: Stickers,
       },
 
       {
         path: 'perfil',
         component: Profile,
       },
-      
+
       {
         path: 'packs',
         component: Packs,
@@ -69,6 +72,20 @@ export const routes: Routes = [
       {
         path: 'album/:id',
         component: AlbumView,
+      },
+      {
+        path: 'chat-global',
+        component: ChatGlobal
+      },
+
+      {
+        path: 'bafo',
+        component: Bafo
+      },
+
+      {
+        path: 'trocas',
+        component: Trocas
       },
     ],
   },

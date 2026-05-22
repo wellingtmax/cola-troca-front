@@ -1,5 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule } from '@angular/forms';
 
 import { AlbumService } from '../../core/services/album';
 import { AlertService } from '../../core/services/alert';
@@ -15,6 +17,8 @@ import { AlbumCard } from '../../shared/album-card/album-card';
   imports: [
     CommonModule,
     AlbumCard,
+    MatIconModule,
+    FormsModule,
   ],
   templateUrl: './store.html',
   styleUrl: './store.css',
@@ -24,7 +28,14 @@ export class Store implements OnInit {
   private readonly albumService = inject(AlbumService);
   private readonly alertService = inject(AlertService);
   private readonly storeService = inject(StoreService);
+// =======================BUSCAR
+  searchTerm = '';
+  selectedCompany = '';
+  selectedCategory = '';
 
+  companies: string[] = [];
+  categories: string[] = [];
+// ==============================
   albums: Album[] = [];
 
   loading = true;
@@ -40,7 +51,14 @@ export class Store implements OnInit {
       next: (response) => {
 
         this.albums = response.data;
-
+        // ================buscar=============
+        this.companies = [
+          ...new Set(this.albums.map((album: any) => album.company).filter(Boolean))
+        ];
+        this.categories = [
+          ...new Set(this.albums.map((album: any) => album.category).filter(Boolean))
+        ];
+        // ===========================================
         this.loading = false;
 
         this.alertService.success(
@@ -79,6 +97,27 @@ export class Store implements OnInit {
           error?.error?.message || 'Não foi possível comprar o álbum.',
         );
       },
+    });
+  }
+  // =============================buscar===========
+  get filteredAlbums() {
+    return this.albums.filter((album: any) => {
+      const search = this.searchTerm.toLowerCase();
+
+      const matchesSearch =
+      !search ||
+      album.themeName?.toLowerCase().includes(search) ||
+      album.company?.toLowerCase().includes(search) ||
+      album.category?.toLowerCase().includes(search) ||
+      album.collection?.toLowerCase().includes(search);
+
+      const matchesCompany =
+      !this.selectedCategory || album.company === this.selectedCompany;
+
+      const matchesCategory =
+      !this.selectedCategory || album.category === this.selectedCategory;
+
+      return matchesSearch && matchesCompany && matchesCategory;
     });
   }
 }

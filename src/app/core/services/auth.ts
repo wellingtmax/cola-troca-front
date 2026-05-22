@@ -80,4 +80,19 @@ export class AuthService {
 
     return user ? JSON.parse(user) : null;
   }
+
+  updateCurrentUser(data: Partial<User>) {
+    const currentUser = this.userSignal();
+
+    if (!currentUser) return;
+
+    const updatedUser = {
+      ...currentUser,
+      ...data,
+    };
+
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+
+    this.userSignal.set(updatedUser);
+  }
 }

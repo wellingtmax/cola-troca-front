@@ -1,69 +1,76 @@
-<div class="h-screen w-72 bg-zinc-950 border-r border-zinc-800 flex flex-col">
+<div class="sidebar-shell">
 
-  <div class="p-6 border-b border-zinc-800">
-    <h1 class="text-3xl font-bold text-emerald-400">
+  <div class="sidebar-brand">
+    <h1>
       Cola&Troca
     </h1>
 
-    <p class="text-zinc-400 text-sm mt-1">
+    <p>
       Álbum digital colecionável
     </p>
   </div>
 
-  <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+  <nav class="sidebar-nav">
 
-    <div>
-      <p class="text-xs uppercase tracking-widest text-zinc-500 px-4 mb-2">
+    <div class="sidebar-section">
+      <p class="section-title">
         Loja
       </p>
 
-      <a
-        routerLink="/loja"
-        routerLinkActive="bg-zinc-900 text-white"
-        class="flex items-center gap-4 p-4 rounded-2xl hover:bg-zinc-900 transition text-zinc-300"
-      >
+      <a routerLink="/loja" routerLinkActive="active-link" class="sidebar-link">
         <mat-icon>store</mat-icon>
         <span>Álbuns</span>
       </a>
 
-      <a
-        routerLink="/packs"
-        routerLinkActive="bg-zinc-900 text-white"
-        class="flex items-center gap-4 p-4 rounded-2xl hover:bg-zinc-900 transition text-zinc-300"
-      >
+      <a routerLink="/packs" routerLinkActive="active-link" class="sidebar-link">
         <mat-icon>inventory_2</mat-icon>
         <span>Packs de Figurinhas</span>
       </a>
     </div>
 
-    <div>
-      <p class="text-xs uppercase tracking-widest text-zinc-500 px-4 mb-2">
+    <div class="sidebar-section">
+      <p class="section-title">
         Minha Conta
       </p>
 
-      <a
-        routerLink="/biblioteca"
-        routerLinkActive="bg-zinc-900 text-white"
-        class="flex items-center gap-4 p-4 rounded-2xl hover:bg-zinc-900 transition text-zinc-300"
-      >
+      <a routerLink="/biblioteca" routerLinkActive="active-link" class="sidebar-link">
+
         <mat-icon>collections_bookmark</mat-icon>
-        <span>Minha Biblioteca</span>
+
+        <div class="sidebar-link-content">
+
+          <span>Minha Biblioteca</span>
+
+          <div *ngIf="pendingAlbumsCount > 0" class="sidebar-badge">
+            {{ pendingAlbumsCount }}
+          </div>
+
+        </div>
+
       </a>
 
-      <a
-        routerLink="/repetidas"
-        routerLinkActive="bg-zinc-900 text-white"
-        class="flex items-center gap-4 p-4 rounded-2xl hover:bg-zinc-900 transition text-zinc-300"
-      >
-        <mat-icon>sync_alt</mat-icon>
-        <span>Repetidas</span>
+      <a routerLink="/figurinhas" routerLinkActive="active-link" class="sidebar-link">
+        <mat-icon>style</mat-icon>
+        <span>Figurinhas</span>
       </a>
 
-      <a
-        routerLink="/perfil"
-        routerLinkActive="bg-zinc-900 text-white"
-        class="flex items-center gap-4 p-4 rounded-2xl hover:bg-zinc-900 transition text-zinc-300"
-      >
+
+      <a routerLink="/trocas" routerLinkActive="sidebar-link-active" class="sidebar-link">
+        <mat-icon>swap_horiz</mat-icon>
+        <span>Troca de Figurinhas</span>
+      </a>
+
+      <a routerLink="/bafo" routerLinkActive="sidebar-link-active" class="sidebar-link">
+        <mat-icon>sports_esports</mat-icon>
+        <span>Bafo Bafo</span>
+      </a>
+
+      <a routerLink="/chat-global" routerLinkActive="sidebar-link-active" class="sidebar-link">
+        <mat-icon>forum</mat-icon>
+        <span>Chat Global</span>
+      </a>
+
+      <a routerLink="/perfil" routerLinkActive="active-link" class="sidebar-link">
         <mat-icon>person</mat-icon>
         <span>Perfil</span>
       </a>
@@ -71,19 +78,17 @@
 
   </nav>
 
-  <div class="p-4 border-t border-zinc-800 space-y-3">
+  <div class="sidebar-footer">
 
-    <button
-      class="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-bold py-3 rounded-2xl transition flex items-center justify-center gap-3"
-    >
-      <mat-icon>dark_mode</mat-icon>
-      Tema
+    <button (click)="toggleTheme()" class="theme-button">
+      <mat-icon>
+        {{ themeService.currentTheme === 'dark' ? 'light_mode' : 'dark_mode' }}
+      </mat-icon>
+
+      {{ themeService.currentTheme === 'dark' ? 'Tema Claro' : 'Tema Escuro' }}
     </button>
 
-    <button
-      class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-2xl transition flex items-center justify-center gap-3"
-      (click)="logout()"
-    >
+    <button class="logout-button" (click)="logout()">
       <mat-icon>logout</mat-icon>
       Sair
     </button>

@@ -1,54 +1,151 @@
-<div class="text-white p-4 md:p-10">
+<div class="library-page">
 
-  <div class="flex items-center justify-between mb-10">
+  <div class="library-header">
 
     <div>
-
-      <h1 class="text-5xl font-bold mb-3">
+      <h1>
         Minha Biblioteca
       </h1>
 
-      <p class="text-zinc-400 text-lg">
+      <p>
         Seus álbuns comprados aparecerão aqui.
       </p>
-
     </div>
 
   </div>
 
-  <div
-    *ngIf="loading"
-    class="flex items-center justify-center h-96"
-  >
+  <!-- =======================buscar -->
+  <div class="w-full mb-10">
 
-    <div class="text-center">
+    <div class="
+      grid
+      grid-cols-1
+      md:grid-cols-2
+      xl:grid-cols-4
+      gap-4
+    ">
 
-      <div class="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+      <!-- BUSCA -->
 
-      <p class="text-zinc-400 text-xl">
-        Carregando biblioteca...
-      </p>
+      <div class="relative xl:col-span-2">
+
+        <mat-icon class="
+          absolute
+          left-4
+          top-1/2
+          -translate-y-1/2
+          text-zinc-500
+        ">
+          search
+        </mat-icon>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          placeholder="Buscar álbum..."
+          class="library-filter-input"
+        />
+
+      </div>
+
+      <!-- EMPRESA -->
+
+      <div class="relative">
+
+        <mat-icon class="
+          absolute
+          left-4
+          top-1/2
+          -translate-y-1/2
+          text-zinc-500
+          pointer-events-none
+        ">
+          business
+        </mat-icon>
+
+        <select
+        [(ngModel)]="selectedCompany"
+        class="library-filter-input"
+          >
+
+          <option value="">
+            Todas as empresas
+          </option>
+
+          <option *ngFor="let company of companies" [value]="company">
+            {{ company }}
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- CATEGORIA -->
+
+      <div class="relative">
+
+        <mat-icon class="
+          absolute
+          left-4
+          top-1/2
+          -translate-y-1/2
+          text-zinc-500
+          pointer-events-none
+        ">
+          category
+        </mat-icon>
+
+        <select
+          [(ngModel)]="selectedCategory"
+          class="library-filter-input"
+        >
+
+          <option value="">
+            Todas as categorias
+          </option>
+
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+
+        </select>
+
+      </div>
 
     </div>
+
+  </div>
+  <!-- ============================== -->
+
+  <div
+    *ngIf="loading"
+    class="library-loading"
+  >
+
+    <div class="spinner"></div>
+
+    <p>
+      Carregando biblioteca...
+    </p>
 
   </div>
 
   <div
     *ngIf="!loading && albums.length === 0"
-    class="bg-zinc-950 border border-zinc-800 rounded-3xl p-10 text-center"
+    class="library-empty"
   >
 
-    <h2 class="text-4xl font-bold mb-4">
+    <h2>
       Sua biblioteca está vazia
     </h2>
 
-    <p class="text-zinc-400 text-lg mb-8">
+    <p>
       Compre um álbum na loja para começar sua coleção.
     </p>
 
     <a
-      routerLink="/store"
-      class="bg-emerald-500 hover:bg-emerald-600 px-8 py-4 rounded-2xl font-bold text-white transition"
+      routerLink="/loja"
+      class="library-button"
     >
       Ir para Loja
     </a>
@@ -57,12 +154,13 @@
 
   <div
     *ngIf="!loading && albums.length > 0"
-    class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
+    class="library-grid"
   >
 
     <app-album-card
-      *ngFor="let album of albums"
+      *ngFor="let album of filteredAlbums"
       [album]="album"
+      [showPrice]="false"
     />
 
   </div>

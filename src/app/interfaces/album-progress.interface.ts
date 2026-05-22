@@ -7,6 +7,8 @@ export interface  AlbumSticker {
     isSpecial: boolean;
 
     owned: boolean;
+    isPaced: boolean;
+    canPlace: boolean;
     quantityOwned: number;
     quantityDuplicate: number;
 }

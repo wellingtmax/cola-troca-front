@@ -2,50 +2,53 @@
   Carregando álbum...
 </div>
 
-<div *ngIf="!loading && album" class="text-white p-4 md:p-10">
+<div *ngIf="!loading && album" class="album-screen">
 
-  <section class="bg-zinc-950 border border-zinc-800 rounded-[2rem] p-6 md:p-8 mb-10 shadow-2xl">
+  <section class="album-header">
 
-    <div class="flex flex-col lg:flex-row gap-8">
+    <img
+      [src]="album.coverUrl"
+      class="album-cover"
+    />
 
-      <img [src]="album.coverUrl" class="w-full lg:w-96 h-64 object-cover rounded-3xl" />
+    <div class="album-info">
 
-      <div class="flex-1">
+      <h1>{{ album.themeName }}</h1>
 
-        <h1 class="text-4xl md:text-6xl font-bold mb-4">
-          {{ album.themeName }}
-        </h1>
+      <p>Seu álbum digital colecionável.</p>
 
-        <p class="text-zinc-400 text-lg mb-6">
-          Seu álbum digital colecionável.
-        </p>
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          [style.width.%]="progress"
+        ></div>
+      </div>
 
-        <div class="w-full bg-zinc-800 rounded-full h-5 mb-4 overflow-hidden">
-          <div class="bg-emerald-500 h-5 rounded-full transition-all duration-700" [style.width.%]="progress"></div>
+      <div class="album-stats">
+
+        <div>
+          <span>Progresso</span>
+          <strong class="green">{{ progress }}%</strong>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <div>
+          <span>Total</span>
+          <strong>{{ totalStickers }}</strong>
+        </div>
 
-          <div class="bg-zinc-900 rounded-2xl p-4">
-            <p class="text-zinc-400 text-sm">Progresso</p>
-            <p class="text-2xl font-bold text-emerald-400">{{ progress }}%</p>
-          </div>
+        <div>
+          <span>Coladas</span>
+          <strong class="blue">{{ ownedTotal }}</strong>
+        </div>
 
-          <div class="bg-zinc-900 rounded-2xl p-4">
-            <p class="text-zinc-400 text-sm">Total</p>
-            <p class="text-2xl font-bold">{{ totalStickers }}</p>
-          </div>
+        <div>
+          <span>Faltam</span>
+          <strong class="red">{{ missingTotal }}</strong>
+        </div>
 
-          <div class="bg-zinc-900 rounded-2xl p-4">
-            <p class="text-zinc-400 text-sm">Coladas</p>
-            <p class="text-2xl font-bold text-blue-400">{{ ownedTotal }}</p>
-          </div>
-
-          <div class="bg-zinc-900 rounded-2xl p-4">
-            <p class="text-zinc-400 text-sm">Faltam</p>
-            <p class="text-2xl font-bold text-red-400">{{ missingTotal }}</p>
-          </div>
-
+        <div>
+          <span>Pendentes</span>
+          <strong class="orange">{{ pendingStickersTotal }}</strong>
         </div>
 
       </div>
@@ -54,90 +57,296 @@
 
   </section>
 
-  <section class="album-paper rounded-[2rem] p-5 md:p-10 shadow-2xl">
+  <section class="book-area">
 
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h2 class="text-3xl font-bold text-zinc-900">
-          Página do Álbum
-        </h2>
+    <button
+      class="nav-button left"
+      (click)="previousPage()"
+      [disabled]="currentPage === 0"
+    >
+      <span><</span>
+    </button>
 
-        <div class="flex flex-wrap items-center gap-3 mt-6 mb-8">
+    <!-- CAPA -->
 
-          <button class="album-page-button" (click)="previousPage()" [disabled]="currentPage === 1">
-            Anterior
-          </button>
+<div
+  *ngIf="currentPage === 0"
+  class="album-cover-book"
+  [class.cover-opening]="isFlipping && flipDirection === 'next'"
+>
 
-          <button *ngFor="let page of pages" class="album-page-number" [class.active-page]="page === currentPage"
-            (click)="goToPage(page)">
-            {{ page }}
-          </button>
+  <img
+    [src]="album.coverUrl"
+    class="album-cover-book-img"
+  />
 
-          <button class="album-page-button" (click)="nextPage()" [disabled]="currentPage === totalPages">
-            Próxima
-          </button>
+  <div class="album-cover-book-info">
 
+    <h2>
+      {{ album.themeName }}
+    </h2>
+
+    <p>
+      Toque em avançar para abrir o álbum
+    </p>
+
+  </div>
+
+</div>
+
+<!-- LIVRO -->
+
+<div
+  *ngIf="currentPage > 0"
+  class="book"
+  [class.flipping]="isFlipping"
+  [class.page-completed]="completedPages.includes(currentPage)"
+>
+
+      <!-- PÁGINA ESQUERDA -->
+
+      <div class="book-page left-page"
+      [class.page-turning-left]="isFlipping && flipDirection === 'previous'"
+      >
+
+        <div class="page-title">
+          Página {{ currentPage }}
         </div>
 
+        <div class="sticker-grid">
 
+          <div
+            *ngFor="let sticker of leftPageStickers; trackBy: trackBySticker"
+            class="sticker-slot"
+            [class.just-placed]="lastPlacedStickerId === sticker.id"
+            [ngClass]="{
+              'owned': sticker.isPlaced,
+              'empty': !sticker.isPlaced,
+              'rare': sticker.rarity === 'RARE' && sticker.isPlaced,
+              'epic': sticker.rarity === 'EPIC' && sticker.isPlaced,
+              'legendary': sticker.rarity === 'LEGENDARY' && sticker.isPlaced
+            }"
+          >
 
-        <p class="text-zinc-600">
-          Cada espaço representa uma figurinha numerada.
-        </p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-
-      <div *ngFor="let sticker of paginatedStickers; trackBy: trackBySticker" class="sticker-slot" [ngClass]="{
-          'sticker-owned': sticker.owned,
-          'sticker-empty': !sticker.owned
-        }">
-
-        <div class="sticker-number">
-          Nº {{ sticker.number }}
-        </div>
-
-        <ng-container *ngIf="sticker.owned; else emptySticker">
-
-          <img [src]="sticker.imageUrl" class="sticker-image" />
-
-          <div class="sticker-info">
-            <h3>
-              {{ sticker.name }}
-            </h3>
-
-            <span [ngClass]="{
-                'rarity-common': sticker.rarity === 'COMMON',
-                'rarity-rare': sticker.rarity === 'RARE',
-                'rarity-epic': sticker.rarity === 'EPIC',
-                'rarity-legendary': sticker.rarity === 'LEGENDARY'
-              }">
-              {{ sticker.rarity }}
+            <span class="sticker-number">
+              Nº {{ sticker.number }}
             </span>
+
+            <ng-container *ngIf="sticker.isPlaced; else emptySticker">
+
+              <div
+    *ngIf="sticker.rarity === 'EPIC' || sticker.rarity === 'LEGENDARY'"
+    class="album-holo-effect"
+  ></div>
+
+              <img
+                [src]="sticker.imageUrl"
+                class="sticker-img clickable"
+                (click)="openStickerZoom(sticker)"
+              />
+
+              <div class="sticker-footer">
+                <strong>{{ sticker.name }}</strong>
+                <small>{{ sticker.rarity }}</small>
+              </div>
+
+            </ng-container>
+
+            <ng-template #emptySticker>
+              <div class="empty-slot">
+
+                <div *ngIf="placingStickerId === sticker.id"
+                class="flying-sticker"
+                >
+
+                <img [src]="sticker.imageUrl"
+                class="flying-sticker-image"
+                >
+
+                </div>
+
+                <button
+                  *ngIf="sticker.canPlace"
+                  class="place-sticker-button"
+                  [class.placing]="placingStickerId === sticker.id"
+                  (click)="placeSticker(sticker.id)"
+                >
+                  +
+                </button>
+
+                <ng-container *ngIf="!sticker.canPlace">
+                  <span>?</span>
+                  <p>Espaço para colar</p>
+                </ng-container>
+
+                <small>
+                  Figurinha Nº {{ sticker.number }}
+                </small>
+
+              </div>
+            </ng-template>
+
           </div>
 
-          <div *ngIf="sticker.quantityDuplicate > 0" class="duplicate-badge">
-            +{{ sticker.quantityDuplicate }}
+        </div>
+
+      </div>
+
+      <div class="book-spine"></div>
+
+      <!-- PÁGINA DIREITA -->
+
+      <div class="book-page right-page"
+      [class.page-turning-right]="isFlipping && flipDirection === 'next'"
+      >
+
+        <div class="page-title">
+          Página {{ currentPage + 1 }}
+        </div>
+
+        <div class="sticker-grid">
+
+          <div
+            *ngFor="let sticker of rightPageStickers; trackBy: trackBySticker"
+            class="sticker-slot"
+            [class.just-placed]="lastPlacedStickerId === sticker.id"
+            [ngClass]="{
+              'owned': sticker.isPlaced,
+              'empty': !sticker.isPlaced,
+              'rare': sticker.rarity === 'RARE' && sticker.isPlaced,
+              'epic': sticker.rarity === 'EPIC' && sticker.isPlaced,
+              'legendary': sticker.rarity === 'LEGENDARY' && sticker.isPlaced
+            }"
+          >
+
+            <span class="sticker-number">
+              Nº {{ sticker.number }}
+            </span>
+
+            <ng-container *ngIf="sticker.isPlaced; else emptyStickerRight">
+
+              <div
+    *ngIf="sticker.rarity === 'EPIC' || sticker.rarity === 'LEGENDARY'"
+    class="album-holo-effect"
+  ></div>
+
+              <img
+                [src]="sticker.imageUrl"
+                class="sticker-img clickable"
+                (click)="openStickerZoom(sticker)"
+              />
+
+              <div class="sticker-footer">
+                <strong>{{ sticker.name }}</strong>
+                <small>{{ sticker.rarity }}</small>
+              </div>
+
+            </ng-container>
+
+            <ng-template #emptyStickerRight>
+              <div class="empty-slot">
+
+                  <div
+                    *ngIf="placingStickerId === sticker.id"
+                    class="flying-sticker"
+                    >
+                    <img
+                    [src]="sticker.imageUrl"
+                    class="flying-sticker-image"
+                    />
+                  </div>
+
+                <button
+                  *ngIf="sticker.canPlace"
+                  class="place-sticker-button"
+                  [class.placing]="placingStickerId === sticker.id"
+                  (click)="placeSticker(sticker.id)"
+                >
+                  +
+                </button>
+
+                <ng-container *ngIf="!sticker.canPlace">
+                  <span>?</span>
+                  <p>Espaço para colar</p>
+                </ng-container>
+
+                <small>
+                  Figurinha Nº {{ sticker.number }}
+                </small>
+
+              </div>
+            </ng-template>
+
           </div>
 
-        </ng-container>
-
-        <ng-template #emptySticker>
-          <div class="empty-content">
-            <div class="empty-icon">
-              ?
-            </div>
-
-            <p>Espaço para colar</p>
-            <small>Figurinha Nº {{ sticker.number }}</small>
-          </div>
-        </ng-template>
+        </div>
 
       </div>
 
     </div>
 
+    <button
+      class="nav-button right"
+      (click)="nextPage()"
+      [disabled]="currentPage > 0 && currentPage + 2 > totalPages"
+    >
+      <span>></span>
+    </button>
+
   </section>
+
+  <div class="page-counter">
+    {{ currentPage === 0 ? 'Capa do Álbum' : 'Página ' + currentPage + ' de ' + totalPages }}
+  </div>
+
+</div>
+
+<!-- ZOOM FIGURINHA -->
+
+<div
+  *ngIf="selectedSticker"
+  class="sticker-zoom-overlay"
+  (click)="closeStickerZoom()"
+>
+
+  <div
+    class="sticker-zoom-container"
+    [ngClass]="{
+      'zoom-rare': selectedSticker.rarity === 'RARE',
+      'zoom-epic': selectedSticker.rarity === 'EPIC',
+      'zoom-legendary': selectedSticker.rarity === 'LEGENDARY'
+    }"
+    (click)="$event.stopPropagation()"
+  >
+
+    <!-- HOLOGRÁFICO -->
+
+    <div
+      *ngIf="selectedSticker.rarity === 'EPIC' || selectedSticker.rarity === 'LEGENDARY'"
+      class="zoom-holo-effect"
+    ></div>
+
+    <img
+      [src]="selectedSticker.imageUrl"
+      class="zoom-sticker-image"
+    />
+
+    <div class="zoom-sticker-info">
+
+      <h2>
+        {{ selectedSticker.name }}
+      </h2>
+
+      <p>
+        Nº {{ selectedSticker.number }}
+      </p>
+
+      <span>
+        {{ selectedSticker.rarity }}
+      </span>
+
+    </div>
+
+  </div>
 
 </div>

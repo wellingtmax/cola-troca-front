@@ -5,4 +5,5 @@ export interface Album {
   price: number;
   releaseDate: string;
   createdAt: string;
+  pendingCount?: number;
 }

@@ -5,6 +5,7 @@ export interface User {
   phone?: string;
   provider: string;
   avatarUrl?: string;
+  nickname?: string;
   coins: number;
   createdAt: string;
 }

@@ -18,6 +18,9 @@ export class AlbumCard {
   @Input()
   showBuyButton = false;
 
+  @Input()
+  showPrice = true;
+
   @Output()
   buyAlbum = new EventEmitter<string>();
 

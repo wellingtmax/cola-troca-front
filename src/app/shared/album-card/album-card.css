@@ -1,0 +1,160 @@
+.album-card-real {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+  background: transparent;
+  transition: 0.35s ease;
+}
+
+.album-card-real:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.album-cover-real {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  box-shadow:
+    8px 10px 0 rgba(0, 0, 0, 0.22),
+    0 28px 70px rgba(0, 0, 0, 0.35);
+}
+
+body.light-theme .album-cover-real {
+  box-shadow:
+    7px 9px 0 rgba(15, 23, 42, 0.10),
+    0 24px 55px rgba(15, 23, 42, 0.16);
+}
+
+.album-info-real {
+  padding-top: 18px;
+}
+
+.album-info-real h2 {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0 0 8px;
+}
+
+.album-info-real p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin: 0 0 18px;
+}
+
+.album-footer-real {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.album-price-real {
+  font-size: 30px;
+  font-weight: 900;
+  color: #10b981;
+  white-space: nowrap;
+}
+
+.album-actions-real {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.album-button-real {
+  min-width: 70px;
+  height: 45px;
+  padding: 0 18px;
+
+  border-radius: 18px;
+  border: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none !important;
+  font-size: 14px;
+  font-weight: 900;
+
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-view-album {
+  background: #fdfdff !important;
+  color: #10b981 !important;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.288);
+}
+
+body.light-theme .btn-view-album {
+  background: #0f1420 !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 28px rgba(17, 24, 39, 0.18);
+}
+
+.btn-buy-album {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  box-shadow: 0 16px 34px rgba(16, 185, 129, 0.32);
+}
+
+.album-button-real:hover {
+  transform: translateY(-3px);
+}
+
+.album-pending-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 30;
+
+  min-width: 38px;
+  height: 38px;
+  padding: 0 12px;
+
+  border-radius: 999px;
+
+  background: #10b981;
+  color: white;
+
+  font-size: 14px;
+  font-weight: 900;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 0 25px rgba(16,185,129,0.75);
+  animation: pulseAlbumBadge 1.4s infinite;
+}
+
+@keyframes pulseAlbumBadge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .album-card-real {
+    max-width: 280px;
+  }
+
+  .album-info-real h2 {
+    font-size: 24px;
+  }
+
+  .album-price-real {
+    font-size: 26px;
+  }
+
+  .album-button-real {
+    min-width: 70px;
+    height: 45px;
+    font-size: 13px;
+  }
+}

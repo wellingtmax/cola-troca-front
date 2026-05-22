@@ -1,0 +1,126 @@
+.app-shell {
+  min-height: 100vh;
+  color: var(--text-primary);
+  overflow-x: hidden;
+   position: relative;
+}
+
+.main-content {
+  min-height: 100vh;
+  background: transparent;
+}
+
+.page-content {
+  padding: 28px;
+}
+
+/* ================================================= */
+/* SIDEBAR TOGGLE */
+/* ================================================= */
+
+.sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  z-index: 1200;
+
+  width: 52px;
+  height: 52px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: #7c3aed;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow: 0 14px 32px rgba(124, 58, 237, 0.35);
+}
+
+.sidebar-toggle:hover {
+  background: #6d28d9;
+}
+
+.sidebar-toggle-open {
+  left: 304px;
+}
+
+/* ================================================= */
+/* SIDEBAR DRAWER */
+/* ================================================= */
+
+.sidebar-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 288px;
+  height: 100vh;
+
+  z-index: 1200;
+
+  transition:
+    transform 0.3s ease,
+    visibility 0.3s ease;
+}
+
+.sidebar-open {
+  transform: translateX(0);
+  visibility: visible;
+}
+
+.sidebar-closed {
+  transform: translateX(-288px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ================================================= */
+/* BACKDROP */
+/* ================================================= */
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+
+  background: rgba(0, 0, 0, 0.50);
+  backdrop-filter: blur(4px);
+}
+
+/* ================================================= */
+/* MOBILE */
+/* ================================================= */
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 16px;
+  }
+
+  .sidebar-toggle {
+    top: 18px;
+    left: 16px;
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 16px;
+  }
+
+  .sidebar-toggle-open {
+    left: 270px;
+  }
+
+  .sidebar-drawer {
+    width: 260px;
+  }
+
+  .sidebar-closed {
+    transform: translateX(-260px);
+  }
+}

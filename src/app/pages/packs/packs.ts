@@ -28,12 +28,14 @@ export class Packs {
   private readonly packService = inject(PackService);
   private readonly alertService = inject(AlertService);
   private readonly albumService = inject(AlbumService);
-  private readonly authService = inject(AuthService)
+  private readonly authService = inject(AuthService);
 
   albums: Album[] = [];
   selectedAlbumId = '';
 
   loading = false;
+
+  selectedPackImage = 'assets/packs/pack-gratis.png';
 
   drawnStickers: DrawnSticker[] = [];
   revealedStickers: DrawnSticker[] = [];
@@ -47,6 +49,7 @@ export class Packs {
       next: (response) => {
         this.albums = response.data;
       },
+
       error: () => {
         this.alertService.error(
           'Erro ao carregar álbuns',
@@ -54,6 +57,16 @@ export class Packs {
         );
       },
     });
+  }
+
+  setSelectedPackImage(packType: PackType) {
+    const packImages: Record<PackType, string> = {
+      SMALL: 'assets/packs/pack-pequeno.png',
+      MEDIUM: 'assets/packs/pack-premium.png',
+      LARGE: 'assets/packs/pack-elite.png',
+    };
+
+    this.selectedPackImage = packImages[packType];
   }
 
   openPack(packType: PackType) {
@@ -65,6 +78,8 @@ export class Packs {
 
       return;
     }
+
+    this.setSelectedPackImage(packType);
 
     this.loading = true;
     this.drawnStickers = [];
@@ -81,8 +96,9 @@ export class Packs {
           this.loading = false;
 
           this.revealCards();
+
           this.authService.profile().subscribe();
-          
+
           this.alertService.success(
             'Pacote aberto!',
             `${response.data.total} figurinha(s) recebida(s).`,
@@ -91,12 +107,58 @@ export class Packs {
       },
 
       error: (error) => {
-
         this.loading = false;
 
         this.alertService.error(
           'Erro ao abrir pacote',
           error?.error?.message || 'Erro interno do servidor.',
+        );
+      },
+    });
+  }
+
+  openFreePack() {
+    if (!this.selectedAlbumId) {
+      this.alertService.warning(
+        'Selecione um álbum',
+        'Escolha um álbum antes de abrir o pack.',
+      );
+
+      return;
+    }
+
+    this.selectedPackImage = 'assets/packs/pack-gratis.png';
+
+    this.loading = true;
+    this.drawnStickers = [];
+    this.revealedStickers = [];
+
+    this.packService.openFreePack(
+      this.selectedAlbumId,
+    ).subscribe({
+      next: (response) => {
+        this.drawnStickers = response.data.stickers;
+
+        setTimeout(() => {
+          this.loading = false;
+
+          this.revealCards();
+
+          this.authService.profile().subscribe();
+
+          this.alertService.success(
+            'Pack diário aberto!',
+            `${response.data.total} figurinha(s) recebida(s).`,
+          );
+        }, 2500);
+      },
+
+      error: (error) => {
+        this.loading = false;
+
+        this.alertService.error(
+          'Pack diário indisponível',
+          error?.error?.message || 'Você já abriu seu pack grátis hoje.',
         );
       },
     });
@@ -110,61 +172,9 @@ export class Packs {
     });
   }
 
-  openFreePack() {
-
-    if (!this.selectedAlbumId) {
-
-      this.alertService.warning(
-        'Selecione um álbum',
-        'Escolha um álbum antes de abrir o pack.',
-      );
-
-      return;
-    }
-
-    this.loading = true;
-
-    this.drawnStickers = [];
-
-    this.revealedStickers = [];
-
-    this.packService.openFreePack(
-      this.selectedAlbumId,
-    ).subscribe({
-
-      next: (response) => {
-
-        this.drawnStickers = response.data.stickers;
-
-        setTimeout(() => {
-
-          this.loading = false;
-
-          this.revealCards();
-
-          this.alertService.success(
-            'Pack diário aberto!',
-            `${response.data.total} figurinha(s) recebida(s).`,
-          );
-
-        }, 2500);
-      },
-
-      error: (error) => {
-
-        this.loading = false;
-
-        this.alertService.error(
-          'Pack diário indisponível',
-          error?.error?.message || 'Você já abriu seu pack grátis hoje.',
-        );
-      },
-    });
-  }
-
   onImageError(event: Event) {
-  const img = event.target as HTMLImageElement;
+    const img = event.target as HTMLImageElement;
 
-  img.src = 'https://placehold.co/512x768/18181b/ffffff?text=Sem+Imagem';
-}
+    img.src = 'https://placehold.co/512x768/18181b/ffffff?text=Sem+Imagem';
+  }
 }

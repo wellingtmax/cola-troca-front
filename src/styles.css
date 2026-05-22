@@ -1,3 +1,149 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ================================================= */
+/* BASE */
+/* ================================================= */
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  transition:
+    background 0.35s ease,
+    color 0.35s ease;
+}
+
+/* ================================================= */
+/* DARK THEME */
+/* ================================================= */
+
+body.dark-theme {
+  --bg-primary: #18181b;
+  --bg-secondary: #111113;
+  --card-bg: #050505;
+
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+
+  --accent: #10b981;
+  --accent-hover: #059669;
+
+  --border-color: #27272a;
+
+  --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.45);
+
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.08), transparent 35%),
+    linear-gradient(135deg, #111111, #18181b, #0f172a);
+
+  color: var(--text-primary);
+}
+
+/* ================================================= */
+/* LIGHT THEME */
+/* ================================================= */
+
+body.light-theme {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #eef2ff;
+  --card-bg: #ffffff;
+
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+
+  --border-color: rgba(124, 58, 237, 0.18);
+
+  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.12);
+
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.14), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.12), transparent 30%),
+    linear-gradient(135deg, #fdf2f8, #eff6ff, #fef9c3);
+
+  color: var(--text-primary);
+}
+
+/* ================================================= */
+/* GLOBAL UTILS */
+/* ================================================= */
+
+.app-bg {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.app-surface {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.app-card {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-soft);
+}
+
+.app-text {
+  color: var(--text-primary);
+}
+
+.app-muted {
+  color: var(--text-secondary);
+}
+
+.app-accent {
+  color: var(--accent);
+}
+
+.app-button-primary {
+  background: var(--accent);
+  color: white;
+}
+
+.app-button-primary:hover {
+  background: var(--accent-hover);
+}
+
+body.light-theme .text-white {
+  color: var(--text-primary);
+}
+
+body.light-theme .text-zinc-400,
+body.light-theme .text-zinc-300 {
+  color: var(--text-secondary);
+}
+
+body.light-theme .bg-zinc-950,
+body.light-theme .bg-zinc-900 {
+  background: var(--card-bg);
+}
+
+body.light-theme .border-zinc-800,
+body.light-theme .border-zinc-700 {
+  border-color: var(--border-color);
+}
+
+.app-page {
+  padding: 20px;
+}
+
+.app-title {
+  font-size: 48px;
+  font-weight: 900;
+  color: var(--text-primary);
+}
+
+.app-subtitle {
+  margin-top: 10px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
