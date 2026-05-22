@@ -12,8 +12,8 @@ import { Packs } from './pages/packs/packs';
 import { AlbumView } from './pages/album-view/album-view';
 import { ChatGlobal } from './pages/chat-global/chat-global';
 import { Bafo } from './pages/bafo/bafo';
-import { Trocas } from './pages/trocas/trocas';
 import { Stickers } from './pages/stickers/stickers';
+import { Trades } from './pages/trades/trades';
 
 export const routes: Routes = [
 
@@ -85,7 +85,7 @@ export const routes: Routes = [
 
       {
         path: 'trocas',
-        component: Trocas
+        component: Trades
       },
     ],
   },

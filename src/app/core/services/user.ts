@@ -45,4 +45,11 @@ export class UserService {
       },
     );
   }
+
+  generateTradeCode() {
+    return this.http.patch<any>(
+      `${this.apiUrl}/trade-code`,
+      {},
+    );
+  }
 }

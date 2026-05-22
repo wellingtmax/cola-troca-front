@@ -9,15 +9,14 @@
     <section class="profile-hero">
 
       <div class="profile-avatar-box">
-        <img
-          *ngIf="profile.avatarUrl"
-          [src]="profile.avatarUrl"
-          class="profile-avatar"
-        />
+
+        <img *ngIf="profile.avatarUrl" [src]="profile.avatarUrl" class="profile-avatar"
+          (error)="onAvatarError($event)" />
 
         <div *ngIf="!profile.avatarUrl" class="profile-avatar fallback">
-          {{ profile.name?.charAt(0) || 'U' }}
+          {{ profile.nickname?.charAt(0) || profile.name?.charAt(0) || 'U' }}
         </div>
+
       </div>
 
       <div>
@@ -63,31 +62,19 @@
 
     <section class="profile-tabs">
 
-      <button
-        [class.active]="activeTab === 'perfil'"
-        (click)="activeTab = 'perfil'"
-      >
+      <button [class.active]="activeTab === 'perfil'" (click)="activeTab = 'perfil'">
         Perfil
       </button>
 
-      <button
-        [class.active]="activeTab === 'endereco'"
-        (click)="activeTab = 'endereco'"
-      >
+      <button [class.active]="activeTab === 'endereco'" (click)="activeTab = 'endereco'">
         Endereço
       </button>
 
-      <button
-        [class.active]="activeTab === 'avatar'"
-        (click)="activeTab = 'avatar'"
-      >
+      <button [class.active]="activeTab === 'avatar'" (click)="activeTab = 'avatar'">
         Avatar
       </button>
 
-      <button
-        [class.active]="activeTab === 'seguranca'"
-        (click)="activeTab = 'seguranca'"
-      >
+      <button [class.active]="activeTab === 'seguranca'" (click)="activeTab = 'seguranca'">
         Segurança
       </button>
 
@@ -96,8 +83,35 @@
     <section class="profile-panel">
 
       <div *ngIf="activeTab === 'perfil'" class="profile-form">
-
         <h2>Dados do Perfil</h2>
+        <!-- ===========================tradeCode -->
+        <div class="trade-code-box">
+
+          <div>
+
+            <span>
+              ID de Troca
+            </span>
+
+            <strong>
+              {{
+              profile.tradeCode
+              || 'Ainda não gerado'
+              }}
+            </strong>
+
+          </div>
+
+          <button *ngIf="!profile.tradeCode" (click)="generateTradeCode()">
+            Gerar ID
+          </button>
+
+          <button *ngIf="profile.tradeCode" (click)="copyTradeCode()">
+            Copiar
+          </button>
+
+        </div>
+        <!-- ================================================ -->
 
         <label>
           Nome completo
@@ -185,12 +199,8 @@
 
         <div class="avatar-grid">
 
-          <button
-            *ngFor="let avatar of avatars"
-            class="avatar-option"
-            [class.selected]="profile.avatarUrl === avatar"
-            (click)="selectAvatar(avatar)"
-          >
+          <button *ngFor="let avatar of avatars" class="avatar-option" [class.selected]="profile.avatarUrl === avatar"
+            (click)="selectAvatar(avatar)">
             <img [src]="avatar" />
           </button>
 

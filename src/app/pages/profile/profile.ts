@@ -123,4 +123,42 @@ export class Profile implements OnInit {
       },
     });
   }
+
+  generateTradeCode() {
+
+    this.userService.generateTradeCode().subscribe({
+
+      next: (response) => {
+
+        this.profile.tradeCode = response.data;
+
+        this.alertService.success(
+          'ID de troca gerado!',
+        );
+      },
+
+      error: () => {
+        this.alertService.error(
+          'Erro ao gerar ID.',
+        );
+      },
+    });
+  }
+
+  copyTradeCode() {
+
+    navigator.clipboard.writeText(
+      this.profile.tradeCode,
+    );
+
+    this.alertService.success(
+      'ID copiado!',
+    );
+  }
+
+  onAvatarError(event: Event) {
+  const img = event.target as HTMLImageElement;
+
+  img.src = 'assets/avatars/trofeu.png';
+}
 }

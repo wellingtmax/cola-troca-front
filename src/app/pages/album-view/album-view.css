@@ -1086,3 +1086,27 @@
     font-size: 24px;
   }
 }
+
+.back-library-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-bottom: 24px;
+
+  padding: 12px 20px;
+
+  border-radius: 999px;
+
+  background: #111827;
+  color: white;
+
+  font-weight: 900;
+  text-decoration: none;
+
+  box-shadow: 0 14px 32px rgba(0,0,0,0.22);
+}
+
+.back-library-button:hover {
+  background: #10b981;
+}

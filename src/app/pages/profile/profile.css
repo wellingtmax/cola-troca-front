@@ -430,3 +430,63 @@ body.light-theme .profile-hero h1 {
     flex-wrap: nowrap;
   }
 }
+
+.trade-code-box {
+  margin-top: 24px;
+
+  padding: 22px;
+
+  border-radius: 22px;
+
+  background: var(--card-bg);
+
+  border: 1px solid var(--border-color);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.trade-code-box span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--text-secondary);
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.trade-code-box strong {
+  font-size: 30px;
+  font-weight: 900;
+
+  color: var(--accent);
+
+  letter-spacing: 1px;
+}
+
+.trade-code-box button {
+  height: 50px;
+
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 16px;
+
+  background: var(--accent);
+  color: white;
+
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition: 0.25s ease;
+}
+
+.trade-code-box button:hover {
+  transform: translateY(-2px);
+}

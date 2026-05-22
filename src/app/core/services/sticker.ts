@@ -32,4 +32,11 @@ export class StickerService {
       {},
     );
   }
+
+  placeAllStickers() {
+    return this.http.patch<any>(
+      `${this.apiUrl}/place-all`,
+      {}
+    )
+  }
 }

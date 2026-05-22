@@ -1,0 +1,164 @@
+<div class="trades-page">
+
+  <section class="trades-header">
+    <div>
+      <h1>Troca de Figurinhas</h1>
+      <p>Busque colecionadores pelo ID de troca e envie propostas.</p>
+    </div>
+  </section>
+
+  <section class="trade-search-card">
+
+    <div class="trade-search-input">
+      <mat-icon>qr_code_2</mat-icon>
+
+      <input
+        [(ngModel)]="tradeCode"
+        placeholder="Digite o ID de troca. Ex: C&T#0003"
+      />
+    </div>
+
+    <button (click)="searchCollector()">
+      Buscar
+    </button>
+
+  </section>
+
+  <section
+    *ngIf="receiver"
+    class="collector-card"
+  >
+
+    <img
+      *ngIf="receiver.avatarUrl"
+      [src]="receiver.avatarUrl"
+    />
+
+    <div class="collector-avatar-fallback" *ngIf="!receiver.avatarUrl">
+      {{ receiver.nickname?.[0] || receiver.name?.[0] || 'U' }}
+    </div>
+
+    <div>
+      <h2>{{ receiver.nickname || receiver.name }}</h2>
+      <p>{{ receiver.tradeCode }}</p>
+    </div>
+
+  </section>
+
+  <section class="trade-section">
+
+    <div class="section-title">
+      <h2>Suas figurinhas repetidas</h2>
+      <p>Escolha quais figurinhas deseja oferecer.</p>
+    </div>
+
+    <div *ngIf="loading" class="trade-loading">
+      Carregando figurinhas...
+    </div>
+
+    <div
+      *ngIf="!loading && myStickers.length === 0"
+      class="trade-empty"
+    >
+      <mat-icon>style</mat-icon>
+      <h3>Você não possui figurinhas repetidas disponíveis.</h3>
+      <p>Abra packs para conseguir repetidas e iniciar trocas.</p>
+    </div>
+
+    <div
+      *ngIf="!loading && myStickers.length > 0"
+      class="trade-stickers-grid"
+    >
+
+      <button
+        *ngFor="let sticker of myStickers"
+        class="trade-sticker-card"
+        [class.selected]="offeredStickerIds.includes(sticker.id)"
+        (click)="toggleOfferedSticker(sticker.id)"
+      >
+
+        <img
+          [src]="sticker.imageUrl"
+          [alt]="sticker.name"
+        />
+
+        <div class="trade-sticker-info">
+          <span>Nº {{ sticker.number }}</span>
+          <strong>{{ sticker.name }}</strong>
+          <small>{{ sticker.albumName }}</small>
+          <em>Repetidas: {{ sticker.quantityDuplicate }}</em>
+        </div>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <section
+    *ngIf="receiver && offeredStickerIds.length > 0"
+    class="trade-submit-card"
+  >
+
+    <div>
+      <strong>
+        {{ offeredStickerIds.length }} figurinha(s) selecionada(s)
+      </strong>
+
+      <p>
+        Enviar proposta para {{ receiver.nickname || receiver.name }}.
+      </p>
+    </div>
+
+    <button (click)="createTrade()">
+      Enviar Proposta
+    </button>
+
+  </section>
+
+  <section class="trade-section">
+
+    <div class="section-title">
+      <h2>Minhas propostas</h2>
+      <p>Acompanhe trocas enviadas e recebidas.</p>
+    </div>
+
+    <div
+      *ngIf="myTrades.length === 0"
+      class="trade-empty small"
+    >
+      <mat-icon>swap_horiz</mat-icon>
+      <h3>Nenhuma proposta encontrada.</h3>
+    </div>
+
+    <div
+      *ngIf="myTrades.length > 0"
+      class="trades-list"
+    >
+
+      <div
+        *ngFor="let trade of myTrades"
+        class="trade-item"
+      >
+
+        <div>
+          <strong>
+            {{ trade.sender?.nickname || trade.sender?.name || 'Usuário' }}
+            →
+            {{ trade.receiver?.nickname || trade.receiver?.name || 'Usuário' }}
+          </strong>
+
+          <p>Status: {{ trade.status }}</p>
+        </div>
+
+        <span>
+          {{ trade.items?.length || 0 }} item(ns)
+        </span>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { CollectionService } from '../../core/services/collection';
 import { AlertService } from '../../core/services/alert';
@@ -8,7 +8,7 @@ import { AlertService } from '../../core/services/alert';
 @Component({
   selector: 'app-album-view',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './album-view.html',
   styleUrl: './album-view.css',
 })

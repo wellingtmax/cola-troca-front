@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 
 import { StickerService } from '../../core/services/sticker';
 import { AlertService } from '../../core/services/alert';
+import { CollectionService } from '../../core/services/collection';
 
 @Component({
   selector: 'app-stickers',
@@ -23,6 +24,7 @@ export class Stickers implements OnInit {
 
   private readonly stickerService = inject(StickerService);
   private readonly alertService = inject(AlertService);
+  private readonly collectionService = inject(CollectionService)
 
   loading = true;
 
@@ -176,4 +178,50 @@ export class Stickers implements OnInit {
       },
     });
   }
+
+  showPlaceAllModal = false;
+pendingPlaceTotal = 0;
+
+openPlaceAllModal() {
+  this.pendingPlaceTotal = this.stickers.filter(
+    (sticker: any) => !sticker.isPlaced,
+  ).length;
+
+  if (this.pendingPlaceTotal === 0) {
+    this.alertService.warning('Nenhuma figurinha pendente.');
+    return;
+  }
+
+  this.showPlaceAllModal = true;
+}
+
+closePlaceAllModal() {
+  this.showPlaceAllModal = false;
+}
+
+confirmPlaceAllStickers() {
+  this.stickerService.placeAllStickers()
+    .subscribe({
+      next: (response: any) => {
+        this.stickers.forEach((sticker: any) => {
+          sticker.isPlaced = true;
+        });
+
+        this.collectionService.refreshPendingCount();
+
+        this.showPlaceAllModal = false;
+
+        this.alertService.success(
+          response.message || 'Figurinhas coladas!',
+
+        );
+      },
+
+      error: () => {
+        this.alertService.error(
+          'Erro ao colar figurinhas.',
+        );
+      },
+    });
+}
 }
