@@ -6,6 +6,7 @@ import { PackService } from '../../core/services/pack';
 import { AlertService } from '../../core/services/alert';
 import { AlbumService } from '../../core/services/album';
 import { AuthService } from '../../core/services/auth';
+import { Pack } from '../../interfaces/pack.interface';
 
 import { Album } from '../../interfaces/album.interface';
 
@@ -34,6 +35,7 @@ export class Packs {
   selectedAlbumId = '';
 
   loading = false;
+  packs: Pack[] = [];
 
   selectedPackImage = 'assets/packs/pack-gratis.png';
 
@@ -42,6 +44,19 @@ export class Packs {
 
   constructor() {
     this.loadAlbums();
+    this.loadPacks()
+  }
+
+  loadPacks() {
+    this.packService.findAll().subscribe({
+      next: (response) => {
+        console.log('PACKS DO BANCO:', response.data);
+        this.packs = response.data;
+      },
+      error: () => {
+        this.alertService.error('Erro ao carregar packs.');
+      },
+    });
   }
 
   loadAlbums() {
@@ -61,6 +76,7 @@ export class Packs {
 
   setSelectedPackImage(packType: PackType) {
     const packImages: Record<PackType, string> = {
+      FREE: 'assets/packs/pack-gratis.png',
       SMALL: 'assets/packs/pack-pequeno.png',
       MEDIUM: 'assets/packs/pack-premium.png',
       LARGE: 'assets/packs/pack-elite.png',
@@ -177,4 +193,91 @@ export class Packs {
 
     img.src = 'https://placehold.co/512x768/18181b/ffffff?text=Sem+Imagem';
   }
+
+  get freePack() {
+    return this.packs.find(
+      (pack: any) => pack.type === 'FREE',
+    );
+  }
+
+  get paidPacks() {
+    return this.packs.filter(
+      (pack: any) => pack.type !== 'FREE',
+    );
+  }
+
+  getPackImage(packType: PackType): string {
+  const images: Record<PackType, string> = {
+    FREE: 'assets/packs/pack-gratis.png',
+    SMALL: 'assets/packs/pack-pequeno.png',
+    MEDIUM: 'assets/packs/pack-premium.png',
+    LARGE: 'assets/packs/pack-elite.png',
+  };
+
+  return images[packType];
+}
+
+getPackDescription(packType: PackType): string {
+  const descriptions: Record<PackType, string> = {
+    FREE: 'Pack diário gratuito. Receba figurinhas comuns uma vez por dia.',
+    SMALL: 'Ideal para iniciantes. Traz comuns, raras e pequena chance de épica.',
+    MEDIUM: 'Chance elevada de cartas raras, épicas e pequena chance de lendária.',
+    LARGE: 'Pack elite com garantia de pelo menos uma figurinha lendária.',
+  };
+
+  return descriptions[packType];
+}
+
+getPackButtonLabel(packType: PackType): string {
+  if (packType === 'FREE') {
+    return 'Abrir Grátis';
+  }
+
+  return 'Comprar Pack';
+}
+
+getPackRarityClass(packType: PackType): string {
+  const classes: Record<PackType, string> = {
+    FREE: 'rarity-common',
+    SMALL: 'rarity-common',
+    MEDIUM: 'rarity-rare',
+    LARGE: 'rarity-legendary',
+  };
+
+  return classes[packType];
+}
+
+getPackTitleClass(packType: PackType): string {
+  const classes: Record<PackType, string> = {
+    FREE: 'text-white',
+    SMALL: 'text-emerald-400',
+    MEDIUM: 'text-blue-400',
+    LARGE: 'text-yellow-400',
+  };
+
+  return classes[packType];
+}
+
+getPackPriceClass(packType: PackType): string {
+  const classes: Record<PackType, string> = {
+    FREE: 'price-small',
+    SMALL: 'price-small',
+    MEDIUM: 'price-premium',
+    LARGE: 'price-elite',
+  };
+
+  return classes[packType];
+}
+
+getPackButtonClass(packType: PackType): string {
+  const classes: Record<PackType, string> = {
+    FREE: 'bg-white text-emerald-700 hover:bg-zinc-200',
+    SMALL: 'bg-emerald-500 hover:bg-emerald-600',
+    MEDIUM: 'bg-blue-500 hover:bg-blue-600 text-white',
+    LARGE: 'bg-yellow-500 hover:bg-yellow-600 text-black',
+  };
+
+  return classes[packType];
+}
+
 }

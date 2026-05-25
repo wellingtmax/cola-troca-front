@@ -1,11 +1,500 @@
-<div class="app-page">
+<div class="chat-page">
 
-  <h1 class="app-title">
-    Chat Global
-  </h1>
+  <section class="chat-header">
 
-  <p class="app-subtitle">
-    Converse com colecionadores do mundo inteiro.
-  </p>
+    <div>
+      <h1>Chat Global</h1>
+      <p>
+        Converse com colecionadores do Brasil. Futuramente, o chat será separado por países.
+      </p>
+    </div>
 
+    <div class="chat-status">
+      <span></span>
+      Brasil - Global
+    </div>
+
+  </section>
+
+  <section class="chat-layout">
+
+    <!-- ÁREA PRINCIPAL DO CHAT -->
+
+    <div class="chat-main">
+
+      <!-- COMPOSER -->
+
+      <div class="chat-composer">
+
+        <div *ngIf="replyTo" class="reply-preview">
+          <div>
+            <span>Respondendo</span>
+
+            <strong>
+              {{ replyTo.user.nickname || replyTo.user.name }}
+            </strong>
+
+            <p>
+              {{ replyTo.content }}
+            </p>
+          </div>
+
+          <button (click)="cancelReply()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="emoji-row">
+
+          <button (click)="addEmoji('😀')">😀</button>
+          <button (click)="addEmoji('🔥')">🔥</button>
+          <button (click)="addEmoji('👏')">👏</button>
+          <button (click)="addEmoji('⚽')">⚽</button>
+          <button (click)="addEmoji('🏆')">🏆</button>
+          <button (click)="addEmoji('💎')">💎</button>
+          <button (click)="addEmoji('🤝')">🤝</button>
+          <button (click)="addEmoji('🚀')">🚀</button>
+
+        </div>
+
+        <div class="composer-box">
+
+          <textarea [(ngModel)]="messageText" placeholder="Digite sua mensagem para o chat global..."
+            rows="3"></textarea>
+
+          <button [disabled]="sending" (click)="sendMessage()">
+            <mat-icon>send</mat-icon>
+            {{ sending ? 'Enviando...' : 'Enviar' }}
+          </button>
+
+        </div>
+
+        <div class="composer-tools">
+
+          <button disabled>
+            <mat-icon>image</mat-icon>
+            Fotos em breve
+          </button>
+
+          <button disabled>
+            <mat-icon>alternate_email</mat-icon>
+            Marcar em breve
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- LOADING -->
+
+      <div *ngIf="loading" class="chat-loading">
+        Carregando mensagens...
+      </div>
+
+      <!-- EMPTY -->
+
+      <div *ngIf="!loading && messages.length === 0" class="chat-empty">
+        <mat-icon>forum</mat-icon>
+
+        <h3>Nenhuma mensagem ainda.</h3>
+
+        <p>
+          Seja o primeiro colecionador a iniciar uma conversa.
+        </p>
+      </div>
+
+
+      <!-- MENSAGENS -->
+
+      <div *ngIf="!loading && messages.length > 0" class="messages-list">
+
+        <div *ngIf="!loading && hasMoreMessages" class="load-more-messages">
+          <button type="button" [disabled]="loadingMoreMessages" (click)="loadMoreMessages()">
+            <mat-icon>history</mat-icon>
+
+            {{
+            loadingMoreMessages
+            ? 'Carregando...'
+            : 'Carregar mensagens antigas'
+            }}
+          </button>
+        </div>
+
+        <article *ngFor="let message of messages" class="message-card" [id]="'message-' + message.id"
+          [class.mine]="isMine(message)" [class.pinned]="message.isPinned"
+          [class.highlighted]="highlightedMessageId === message.id">
+
+          <div class="message-avatar clickable" (click)="openPublicProfile(message.user.id)">
+
+            <img *ngIf="message.user.avatarUrl" [src]="message.user.avatarUrl"
+              [alt]="message.user.nickname || message.user.name" />
+
+            <div *ngIf="!message.user.avatarUrl" class="avatar-fallback">
+              {{ getInitialLetter(message) }}
+            </div>
+
+          </div>
+
+          <div class="message-body">
+
+            <header class="message-header">
+
+              <div>
+                <div class="message-user-line">
+                  <strong>
+                    {{ message.user.nickname || message.user.name }}
+                  </strong>
+
+                  <small class="message-user-status" [class.online]="isOnline(message.user.lastSeenAt)">
+                    {{ getLastSeenLabel(message.user.lastSeenAt) }}
+                  </small>
+                </div>
+
+                <span>
+                  {{ message.user.tradeCode }}
+                </span>
+              </div>
+
+              <small>
+                {{ message.createdAt | date:'dd/MM/yyyy HH:mm' }}
+              </small>
+
+            </header>
+
+            <div *ngIf="message.replyTo" class="message-reply">
+              <span>
+                Respondendo
+                {{ message.replyTo.user.nickname || message.replyTo.user.name }}
+              </span>
+
+              <p>
+                {{ message.replyTo.content }}
+              </p>
+            </div>
+
+            <p class="message-content">
+              {{ message.content }}
+            </p>
+
+            <footer class="message-actions">
+
+              <button [class.active]="message.likedByMe" (click)="toggleLike(message)">
+                <mat-icon>
+                  {{ message.likedByMe ? 'favorite' : 'favorite_border' }}
+                </mat-icon>
+
+                {{ message.likesCount }}
+              </button>
+
+              <button (click)="startReply(message)">
+                <mat-icon>reply</mat-icon>
+                Responder
+              </button>
+
+              <button *ngIf="!isMine(message)" (click)="sendFriendRequest(message.user.id)">
+                <mat-icon>person_add</mat-icon>
+                Fazer amigo
+              </button>
+
+              <button *ngIf="isMine(message)" class="danger" (click)="deleteMessage(message)">
+                <mat-icon>delete</mat-icon>
+                Apagar
+              </button>
+
+            </footer>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR INTERNA DO CHAT -->
+
+
+    <aside class="chat-side">
+
+      <div class="side-card">
+
+        <h2>
+          Minhas Interações
+
+          <span *ngIf="interactions.length > 0" class="friends-count">
+            {{ interactions.length }}
+          </span>
+        </h2>
+
+        <div *ngIf="interactions.length === 0" class="friend-placeholder">
+          <mat-icon>notifications_none</mat-icon>
+
+          <span>
+            Nenhuma marcação ou resposta ainda.
+          </span>
+        </div>
+
+        <div *ngIf="interactions.length > 0" class="interactions-list">
+
+          <div *ngFor="let interaction of interactions" class="interaction-card"
+            (click)="goToInteraction(interaction.id)">
+            <div class="interaction-main">
+              <strong>
+                {{ interaction.user.nickname || interaction.user.name }}
+              </strong>
+
+              <p>
+                {{ interaction.content }}
+              </p>
+
+              <small>
+                {{ interaction.createdAt | date:'dd/MM HH:mm' }}
+              </small>
+            </div>
+
+            <button class="interaction-delete" title="Remover da lista"
+              (click)="removeInteraction(interaction.id); $event.stopPropagation()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="side-card">
+
+        <h2>Solicitações</h2>
+
+        <div *ngIf="friendRequests.length === 0" class="friend-placeholder">
+          <mat-icon>person_add_disabled</mat-icon>
+
+          <span>
+            Nenhuma solicitação pendente.
+          </span>
+        </div>
+
+        <div *ngIf="friendRequests.length > 0" class="friend-request-list">
+
+          <div *ngFor="let request of friendRequests" class="friend-request-card">
+
+            <img *ngIf="request.sender.avatarUrl" [src]="request.sender.avatarUrl" />
+
+            <div *ngIf="!request.sender.avatarUrl" class="friend-avatar-fallback">
+              {{
+              request.sender.nickname?.[0]
+              || request.sender.name[0]
+              || 'U'
+              }}
+            </div>
+
+            <div class="friend-request-info">
+              <strong>
+                {{ request.sender.nickname || request.sender.name }}
+              </strong>
+
+              <span>
+                {{ request.sender.tradeCode }}
+              </span>
+
+              <div class="friend-request-actions">
+                <button class="accept" (click)="acceptFriendRequest(request.id)">
+                  Aceitar
+                </button>
+
+                <button class="reject" (click)="rejectFriendRequest(request.id)">
+                  Recusar
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="side-card">
+
+        <h2>
+          Amigos
+          <span class="friends-count">
+            {{ friends.length }}
+          </span>
+        </h2>
+
+        <div *ngIf="friends.length === 0" class="friend-placeholder">
+          <mat-icon>group</mat-icon>
+
+          <span>
+            Você ainda não adicionou amigos.
+          </span>
+        </div>
+
+        <div *ngIf="friends.length > 0" class="friends-list">
+
+          <div *ngFor="let friend of friends" class="friend-card clickable" (click)="openPublicProfile(friend.id)">
+
+            <img *ngIf="friend.avatarUrl" [src]="friend.avatarUrl" />
+
+            <div *ngIf="!friend.avatarUrl" class="friend-avatar-fallback">
+              {{
+              friend.nickname?.[0]
+              || friend.name[0]
+              || 'U'
+              }}
+            </div>
+
+            <div>
+              <strong>
+                {{ friend.nickname || friend.name }}
+              </strong>
+
+              <span>
+                {{ friend.tradeCode }}
+              </span>
+
+              <small class="friend-status" [class.oline]="isOnline(friend.lastSeenAt)">
+                {{ getLastSeenLabel(friend.lastSeenAt) }}
+              </small>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      <!-- ===============================future -->
+      <div class="side-card">
+
+        <h2>Recursos futuros</h2>
+
+        <ul>
+          <li>Chat por país</li>
+          <li>Envio de fotos</li>
+          <li>Perfil público do amigo</li>
+          <li>Figurinhas em destaque</li>
+          <li>Chat privado</li>
+          <li>Status online</li>
+        </ul>
+
+      </div>
+      <!-- ================================================ -->
+    </aside>
+
+  </section>
+  <!-- ============================modal profile -->
+  <div *ngIf="selectedProfile || loadingProfile" class="profile-modal-overlay" (click)="closePublicProfile()">
+    <div class="profile-modal" (click)="$event.stopPropagation()">
+
+      <div *ngIf="loadingProfile" class="profile-loading">
+        Carregando perfil...
+      </div>
+
+      <div *ngIf="selectedProfile && !loadingProfile">
+
+        <button class="profile-close" (click)="closePublicProfile()">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <section class="profile-hero-modal">
+
+          <img *ngIf="selectedProfile.avatarUrl" [src]="selectedProfile.avatarUrl" class="profile-modal-avatar" />
+
+          <div *ngIf="!selectedProfile.avatarUrl" class="profile-modal-avatar fallback">
+            {{
+            selectedProfile.nickname?.[0]
+            || selectedProfile.name[0]
+            || 'U'
+            }}
+          </div>
+
+          <div>
+            <h2>
+              {{ selectedProfile.nickname || selectedProfile.name }}
+            </h2>
+
+            <p>
+              {{ selectedProfile.tradeCode }}
+            </p>
+
+            <span>
+              Colecionador desde
+              {{ selectedProfile.createdAt | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+
+        </section>
+
+        <p class="profile-bio">
+          {{ selectedProfile.bio || 'Este colecionador ainda não escreveu uma bio.' }}
+        </p>
+
+        <section class="profile-stats-grid">
+
+          <div>
+            <strong>{{ selectedProfile.stats.totalAlbums }}</strong>
+            <span>Álbuns</span>
+          </div>
+
+          <div>
+            <strong>{{ selectedProfile.stats.totalStickers }}</strong>
+            <span>Figurinhas</span>
+          </div>
+
+          <div>
+            <strong>{{ selectedProfile.stats.totalDuplicates }}</strong>
+            <span>Repetidas</span>
+          </div>
+
+          <div>
+            <strong>{{ selectedProfile.stats.totalFriends }}</strong>
+            <span>Amigos</span>
+          </div>
+
+        </section>
+
+        <section class="featured-section">
+
+          <h3>Figurinhas em destaque</h3>
+
+          <div *ngIf="selectedProfile.featuredStickers.length === 0" class="featured-empty">
+            <mat-icon>style</mat-icon>
+            <p>Esse colecionador ainda não escolheu figurinhas em destaque.</p>
+          </div>
+
+          <div *ngIf="selectedProfile.featuredStickers.length > 0" class="featured-grid">
+
+            <div *ngFor="let item of selectedProfile.featuredStickers" class="featured-card"
+              [class.common]="item.sticker.rarity === 'COMMON'" [class.rare]="item.sticker.rarity === 'RARE'"
+              [class.epic]="item.sticker.rarity === 'EPIC'" [class.legendary]="item.sticker.rarity === 'LEGENDARY'">
+              <img [src]="item.sticker.imageUrl" />
+
+              <span>Nº {{ item.sticker.number }}</span>
+              <strong>{{ item.sticker.name }}</strong>
+              <small>{{ item.sticker.albumName }}</small>
+            </div>
+
+          </div>
+
+        </section>
+
+        <section class="profile-actions">
+
+          <button *ngIf="selectedProfile.id !== currentUser?.id" (click)="sendFriendRequest(selectedProfile.id)">
+            <mat-icon>person_add</mat-icon>
+            Fazer amigo
+          </button>
+
+          <button *ngIf="selectedProfile.id !== currentUser?.id" class="trade" (click)="openTradeWithProfile()">
+            <mat-icon>swap_horiz</mat-icon>
+            Propor troca
+          </button>
+
+        </section>
+
+      </div>
+
+    </div>
+  </div>
+  <!-- ==================================== -->
 </div>

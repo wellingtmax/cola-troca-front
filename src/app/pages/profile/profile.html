@@ -74,6 +74,10 @@
         Avatar
       </button>
 
+      <button [class.active]="activeTab === 'destaques'" (click)="activeTab = 'destaques'">
+        Destaques
+      </button>
+
       <button [class.active]="activeTab === 'seguranca'" (click)="activeTab = 'seguranca'">
         Segurança
       </button>
@@ -207,7 +211,107 @@
         </div>
 
       </div>
+      <!-- =============================================destaque -->
+      <div *ngIf="activeTab === 'destaques'" class="profile-form">
 
+        <h2>Figurinhas em Destaque</h2>
+
+        <p class="muted">
+          Escolha até 5 figurinhas para aparecerem no seu perfil público.
+        </p>
+
+        <div class="featured-topbar">
+
+          <div class="featured-counter">
+            {{ featuredStickerIds.length }}/5 selecionadas
+          </div>
+
+          <button class="save-featured-button" (click)="saveFeaturedStickers()">
+            Salvar Destaques
+          </button>
+
+        </div>
+
+        <div class="featured-filters">
+
+          <input [(ngModel)]="featuredSearchTerm" (ngModelChange)="resetFeaturedPage()"
+            placeholder="Buscar por nome, número ou álbum..." />
+
+          <select [(ngModel)]="featuredSelectedAlbum" (ngModelChange)="resetFeaturedPage()">
+            <option value="">Todos os álbuns</option>
+
+            <option *ngFor="let album of featuredAlbums" [value]="album">
+              {{ album }}
+            </option>
+          </select>
+
+          <select [(ngModel)]="featuredSelectedRarity" (ngModelChange)="resetFeaturedPage()">
+            <option value="">Todas as raridades</option>
+
+            <option *ngFor="let rarity of rarities" [value]="rarity">
+              {{ rarity }}
+            </option>
+          </select>
+
+          <select [(ngModel)]="featuredPageSize" (ngModelChange)="resetFeaturedPage()">
+            <option *ngFor="let size of featuredPageSizes" [value]="size">
+              {{ size }} por página
+            </option>
+          </select>
+
+          <label class="featured-check-filter">
+            <input type="checkbox" [(ngModel)]="featuredOnlySelected" (ngModelChange)="resetFeaturedPage()" />
+
+            Só selecionadas
+          </label>
+
+        </div>
+
+        <div class="featured-results-info">
+          Exibindo
+          {{ paginatedFeaturedStickers.length }}
+          de
+          {{ filteredFeaturedStickers.length }}
+          figurinha(s)
+        </div>
+
+        <div class="featured-stickers-grid">
+
+          <button *ngFor="let sticker of paginatedFeaturedStickers" class="featured-sticker-option"
+            [class.selected]="featuredStickerIds.includes(sticker.id)" [class.common]="sticker.rarity === 'COMMON'"
+            [class.rare]="sticker.rarity === 'RARE'" [class.epic]="sticker.rarity === 'EPIC'"
+            [class.legendary]="sticker.rarity === 'LEGENDARY'" (click)="toggleFeaturedSticker(sticker.id)">
+
+            <img [src]="sticker.imageUrl" [alt]="sticker.name" />
+
+            <div>
+              <span>Nº {{ sticker.number }}</span>
+              <strong>{{ sticker.name }}</strong>
+              <small>{{ sticker.albumName }}</small>
+            </div>
+
+          </button>
+
+        </div>
+
+        <div class="featured-pagination">
+
+          <button type="button" [disabled]="featuredPage === 1" (click)="previousFeaturedPage()">
+            Anterior
+          </button>
+
+          <span>
+            Página {{ featuredPage }} de {{ featuredTotalPages }}
+          </span>
+
+          <button type="button" [disabled]="featuredPage === featuredTotalPages" (click)="nextFeaturedPage()">
+            Próxima
+          </button>
+
+        </div>
+
+      </div>
+      <!-- ============================================================= -->
       <div *ngIf="activeTab === 'seguranca'" class="profile-form">
 
         <h2>Segurança</h2>

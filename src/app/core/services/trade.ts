@@ -29,4 +29,36 @@ export class TradeService {
       `${this.apiUrl}/my`,
     );
   }
+
+  acceptTrade(tradeId: string) {
+    return this.http.patch<ApiResponse<any>>(
+      `${this.apiUrl}/${tradeId}/accept`,
+      {},
+    ); 
+  }
+
+  counterTrade(
+    tradeId: string,
+    dto: any,
+  ) {
+
+    return this.http.patch<ApiResponse<any>>(
+      `${this.apiUrl}/${tradeId}/counter`,
+      dto,
+    );
+  }
+
+  rejectTrade(tradeId: string) {
+    return this.http.patch<ApiResponse<any>>(
+      `${this.apiUrl}/${tradeId}/reject`,
+      {},
+    );
+  }
+
+  cancelTrade(tradeId: string) {
+    return this.http.patch<ApiResponse<any>>(
+      `${this.apiUrl}/${tradeId}/cancel`,
+      {},
+    );
+  }
 }

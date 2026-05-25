@@ -1,42 +1,83 @@
-/* ================================================= */
-/* FIGURINHAS REVELADAS DOS PACKS */
-/* ================================================= */
+/* =========================
+   FIGURINHAS REVELADAS
+========================= */
+
+.reveal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: flex-start;
+}
 
 .sticker-card {
   position: relative;
-  min-height: 420px;
-  border-radius: 28px;
+  width: 320px;
+  min-width: 320px;
+  max-width: 320px;
+  height: 470px;
+  min-height: 470px;
+  flex: none;
+
   overflow: hidden;
-  background: var(--card-bg);
+  border-radius: 0 !important;
+
+  background: #050505;
   border: 2px solid var(--border-color);
-  box-shadow: var(--shadow-soft);
-  transition: 0.35s ease;
-  animation: revealCard 0.6s ease-out;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: revealCard 0.7s ease-out;
 }
 
 .sticker-card:hover {
   transform: translateY(-8px) scale(1.02);
+  z-index: 5;
 }
 
-.sticker-image {
+.sticker-image,
+.sticker-card img {
   width: 100%;
-  height: 420px;
+  height: 100%;
   object-fit: cover;
   display: block;
+
+  border-radius: 0 !important;
 }
 
-/* ================================================= */
-/* LIGHT THEME COM HTML ANTIGO */
-/* ================================================= */
+.sticker-card .rounded-full {
+  border-radius: 6px !important;
+}
 
-body.light-theme .sticker-card .bg-black\/75 {
-  background: rgba(255, 255, 255, 0.92) !important;
+.sticker-card .absolute.bottom-0 {
+  min-height: 110px;
+
   backdrop-filter: blur(12px);
+
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-body.light-theme .sticker-card .bg-black\/70 {
-  background: rgba(255, 255, 255, 0.92) !important;
-  color: #111827 !important;
+/* =========================
+   TEMA CLARO - FIGURINHAS
+========================= */
+
+body.light-theme .sticker-card {
+  background: #ffffff;
+  border-color: rgba(17, 24, 39, 0.16);
+
+  box-shadow: 0 14px 34px rgba(17, 24, 39, 0.14);
+}
+
+body.light-theme .sticker-card .absolute.bottom-0 {
+  background:
+    linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.96),
+      rgba(255, 255, 255, 0.74),
+      rgba(255, 255, 255, 0.15)
+    ) !important;
+
+  border-top: 1px solid rgba(17, 24, 39, 0.10);
 }
 
 body.light-theme .sticker-card h3 {
@@ -47,9 +88,30 @@ body.light-theme .sticker-card p {
   color: #4b5563 !important;
 }
 
-/* ================================================= */
-/* RARIDADES */
-/* ================================================= */
+body.light-theme .sticker-card .bg-black\/70,
+body.light-theme .sticker-card .bg-zinc-800 {
+  background: rgba(17, 24, 39, 0.88) !important;
+  color: #ffffff !important;
+}
+
+body.light-theme .sticker-card .bg-blue-950 {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+body.light-theme .sticker-card .bg-purple-950 {
+  background: #ede9fe !important;
+  color: #7c3aed !important;
+}
+
+body.light-theme .sticker-card .bg-yellow-400 {
+  background: #facc15 !important;
+  color: #111827 !important;
+}
+
+/* =========================
+   RARIDADES
+========================= */
 
 .rarity-common {
   border-color: #71717a;
@@ -62,17 +124,168 @@ body.light-theme .sticker-card p {
 
 .rarity-epic {
   border-color: #a855f7;
-  box-shadow: 0 0 42px rgba(168, 85, 247, 0.45);
+
+  box-shadow:
+    0 0 20px rgba(168, 85, 247, 0.75),
+    0 0 60px rgba(168, 85, 247, 0.35);
+
+  animation: epicPulse 2.4s infinite alternate;
 }
 
 .rarity-legendary {
   border-color: #facc15;
-  box-shadow: 0 0 55px rgba(250, 204, 21, 0.55);
+
+  box-shadow:
+    0 0 25px rgba(250, 204, 21, 0.9),
+    0 0 70px rgba(250, 204, 21, 0.45),
+    0 0 140px rgba(250, 204, 21, 0.18);
+
+  animation: legendaryPulse 2s infinite alternate;
 }
 
-/* ================================================= */
-/* ANIMAÇÕES */
-/* ================================================= */
+body.light-theme .rarity-common {
+  border-color: rgba(107, 114, 128, 0.55);
+}
+
+body.light-theme .rarity-rare {
+  border-color: #2563eb;
+
+  box-shadow:
+    0 0 20px rgba(37, 99, 235, 0.24),
+    0 14px 34px rgba(17, 24, 39, 0.12);
+}
+
+body.light-theme .rarity-epic {
+  border-color: #8b5cf6;
+
+  box-shadow:
+    0 0 24px rgba(139, 92, 246, 0.28),
+    0 16px 38px rgba(17, 24, 39, 0.14);
+}
+
+body.light-theme .rarity-legendary {
+  border-color: #d97706;
+
+  box-shadow:
+    0 0 28px rgba(217, 119, 6, 0.36),
+    0 18px 44px rgba(17, 24, 39, 0.16);
+}
+
+/* =========================
+   PACKS
+========================= */
+
+.pack-card {
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pack-card button {
+  margin-top: auto;
+}
+
+.pack-img {
+  width: 100%;
+  max-width: 230px;
+  height: 350px;
+
+  object-fit: contain;
+
+  margin: 0 auto;
+  display: block;
+
+  filter: drop-shadow(0 0 35px rgba(16, 185, 129, 0.35));
+  transition: 0.3s ease;
+}
+
+.pack-img:hover {
+  transform: scale(1.06);
+}
+
+body.light-theme .pack-card {
+  background: rgba(255, 255, 255, 0.96);
+}
+
+/* =========================
+   SELECT ÁLBUM
+========================= */
+
+.album-select {
+  width: 100%;
+  height: 64px;
+
+  padding: 0 22px;
+  color: #4b4444d2;
+
+  border-radius: 22px;
+  border: 2px solid transparent;
+
+  outline: none;
+
+  font-size: 17px;
+  font-weight: 600;
+
+  cursor: pointer;
+  appearance: none;
+
+  transition: 0.3s ease;
+
+  background-position: right 20px center;
+  background-repeat: no-repeat;
+  background-size: 18px;
+}
+
+body.dark-theme .album-select {
+  background:
+    #ffffff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23111827' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+
+  color: #111827;
+  border-color: #27272a;
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+}
+
+body.light-theme .album-select {
+  background:
+    #ffffff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23111827' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+
+  color: #111827;
+  border-color: rgba(124, 58, 237, 0.15);
+
+  box-shadow: 0 15px 40px rgba(124, 58, 237, 0.08);
+}
+
+.album-select:hover {
+  transform: translateY(-2px);
+}
+
+.album-select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.album-select option {
+  background: #ffffff;
+  color: #111827;
+}
+
+/* =========================
+   ANIMAÇÕES
+========================= */
+
+.animate-holo {
+  animation: holoMove 2.8s linear infinite;
+  mix-blend-mode: screen;
+}
+
+.animate-pack-opening {
+  animation:
+    packOpening 1s ease forwards,
+    floatingPack 2.5s ease-in-out infinite;
+}
 
 @keyframes revealCard {
   from {
@@ -87,212 +300,66 @@ body.light-theme .sticker-card p {
 }
 
 @keyframes holoMove {
-  0% {
+  from {
     transform: translateX(-120%) rotate(15deg);
   }
 
-  100% {
+  to {
     transform: translateX(120%) rotate(15deg);
   }
 }
 
-.animate-holo {
-  animation: holoMove 2.6s infinite linear;
-}
-
-/* ================================================= */
-/* MOBILE */
-/* ================================================= */
-
-@media (max-width: 768px) {
-  .sticker-card {
-    min-height: 340px;
+@keyframes epicPulse {
+  from {
+    box-shadow:
+      0 0 14px rgba(168, 85, 247, 0.35),
+      0 0 40px rgba(168, 85, 247, 0.15);
   }
 
-  .sticker-image {
-    height: 340px;
+  to {
+    box-shadow:
+      0 0 30px rgba(168, 85, 247, 0.9),
+      0 0 90px rgba(168, 85, 247, 0.45);
   }
 }
-/* =================================================================== */
-/* imagens dos paks */
-/* ====================================================================== */
-.pack-card {
-  min-height: 680px;
-  display: flex;
-  flex-direction: column;
+
+@keyframes legendaryPulse {
+  from {
+    box-shadow:
+      0 0 18px rgba(250, 204, 21, 0.45),
+      0 0 60px rgba(250, 204, 21, 0.2);
+  }
+
+  to {
+    box-shadow:
+      0 0 36px rgba(250, 204, 21, 1),
+      0 0 120px rgba(250, 204, 21, 0.55);
+  }
 }
-
-.pack-img {
-  width: 100%;
-  max-width: 230px;
-  height: 350px;
-  object-fit: contain;
-  margin: 0 auto;
-  display: block;
-  filter: drop-shadow(0 0 35px rgba(16, 185, 129, 0.35));
-  transition: 0.3s ease;
-}
-
-.pack-img:hover {
-  transform: scale(1.06);
-}
-
-.pack-card button {
-  margin-top: auto;
-}
-
-body.light-theme .pack-card {
-  background: rgba(255, 255, 255, 0.96);
-}
-
-/* ========================================= */
-/* SELECT ÁLBUM */
-/* ========================================= */
-
-.album-select {
-
-  width: 100%;
-
-  height: 64px;
-
-  padding: 0 22px;
-
-  border-radius: 22px;
-
-  border: 2px solid transparent;
-
-  outline: none;
-
-  font-size: 17px;
-
-  font-weight: 600;
-
-  transition: 0.3s ease;
-
-  cursor: pointer;
-
-  appearance: none;
-
-  background-position: right 20px center;
-  background-repeat: no-repeat;
-  background-size: 18px;
-}
-
-/* DARK */
-
-body.dark-theme .album-select {
-
-  background:
-    #fefeff
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-
-  color: rgb(0, 0, 0);
-
-  border-color: #27272a;
-
-  box-shadow:
-    0 10px 35px rgba(0,0,0,0.25);
-}
-
-/* LIGHT */
-
-body.light-theme .album-select {
-
-  background:
-    white
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23111827' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-
-  color: #111827;
-
-  border-color: rgba(124,58,237,0.15);
-
-  box-shadow:
-    0 15px 40px rgba(124,58,237,0.08);
-}
-
-/* HOVER */
-
-.album-select:hover {
-
-  transform: translateY(-2px);
-}
-
-/* FOCUS */
-
-.album-select:focus {
-
-  border-color: #10b981;
-
-  box-shadow:
-    0 0 0 4px rgba(16,185,129,0.2);
-}
-
-/* OPTION */
-
-.album-select option {
-
-  background: #ffffff;
-
-  color: rgb(0, 0, 0);
-}
-
-body.light-theme .album-select option {
-
-  background: white;
-
-  color: #111827;
-}
-
-/* ========================================= */
-/* ANIMAÇÃO ABRIR PACK */
-/* ========================================= */
 
 @keyframes packOpening {
-
   0% {
-    transform:
-      scale(0.7)
-      rotate(-12deg);
-
+    transform: scale(0.7) rotate(-12deg);
     opacity: 0;
   }
 
   40% {
-    transform:
-      scale(1.08)
-      rotate(6deg);
+    transform: scale(1.08) rotate(6deg);
   }
 
   70% {
-    transform:
-      scale(0.96)
-      rotate(-3deg);
+    transform: scale(0.96) rotate(-3deg);
   }
 
   100% {
-    transform:
-      scale(1)
-      rotate(0deg);
-
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
 
-.animate-pack-opening {
-
-  animation:
-    packOpening 1s ease forwards,
-    floatingPack 2.5s ease-in-out infinite;
-}
-
-/* ========================================= */
-/* FLOAT */
-/* ========================================= */
-
 @keyframes floatingPack {
-
   0% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   50% {
@@ -300,6 +367,57 @@ body.light-theme .album-select option {
   }
 
   100% {
-    transform: translateY(0px);
+    transform: translateY(0);
   }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .reveal-grid {
+    justify-content: center;
+  }
+
+  .sticker-card {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+
+    height: 420px;
+    min-height: 420px;
+  }
+}
+
+.pack-price-badge {
+  display: block;
+
+  padding: 10px 16px;
+  margin-bottom: 24px;
+
+  border-radius: 999px;
+
+  text-align: center;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.price-small {
+  background: rgba(16, 185, 129, 0.18);
+  color: #7cbbab;
+}
+
+.price-premium {
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+}
+
+.price-elite {
+  background: rgba(245, 158, 11, 0.20);
+  color: #b45309;
+} 
+
+.free span {
+  color: #ede9fe;
 }

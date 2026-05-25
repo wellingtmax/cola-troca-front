@@ -51,13 +51,27 @@
 
       <a routerLink="/figurinhas" routerLinkActive="active-link" class="sidebar-link">
         <mat-icon>style</mat-icon>
-        <span>Figurinhas</span>
+
+        <div class="sidebar-link-content">
+          <span>Figurinhas</span>
+
+          <div *ngIf="dashboard?.pendingToPlace > 0" class="sidebar-badge">
+            {{ dashboard.pendingToPlace }}
+          </div>
+        </div>
       </a>
 
 
       <a routerLink="/trocas" routerLinkActive="sidebar-link-active" class="sidebar-link">
         <mat-icon>swap_horiz</mat-icon>
-        <span>Troca de Figurinhas</span>
+
+        <div class="sidebar-link-content">
+          <span>Troca de Figurinhas</span>
+
+          <div *ngIf="dashboard?.pendingTrades > 0" class="sidebar-badge">
+            {{ dashboard.pendingTrades }}
+          </div>
+        </div>
       </a>
 
       <a routerLink="/bafo" routerLinkActive="sidebar-link-active" class="sidebar-link">
@@ -67,7 +81,14 @@
 
       <a routerLink="/chat-global" routerLinkActive="sidebar-link-active" class="sidebar-link">
         <mat-icon>forum</mat-icon>
-        <span>Chat Global</span>
+
+        <div class="sidebar-link-content">
+          <span>Chat Global</span>
+
+          <div *ngIf="dashboard?.pendingFriendRequests > 0" class="sidebar-badge">
+            {{ dashboard.pendingFriendRequests }}
+          </div>
+        </div>
       </a>
 
       <a routerLink="/perfil" routerLinkActive="active-link" class="sidebar-link">
@@ -79,6 +100,56 @@
   </nav>
 
   <div class="sidebar-footer">
+
+    <!-- NOTIFICAÇÕES -->
+
+    <div class="notification-wrapper">
+
+      <button type="button" class="notification-button" (click)="toggleNotifications()">
+        <mat-icon>
+          {{ unreadNotifications > 0 ? 'notifications_active' : 'notifications' }}
+        </mat-icon>
+
+        <span>Notificações</span>
+
+        <strong *ngIf="unreadNotifications > 0">
+          {{ unreadNotifications }}
+        </strong>
+      </button>
+
+      <div *ngIf="showNotifications" class="notification-panel">
+
+        <div class="notification-panel-header">
+          <h3>Notificações</h3>
+
+          <button *ngIf="unreadNotifications > 0" type="button" (click)="markAllNotificationsAsRead()">
+            Marcar todas
+          </button>
+        </div>
+
+        <div *ngIf="notifications.length === 0" class="notification-empty">
+          <mat-icon>notifications_none</mat-icon>
+          <p>Nenhuma notificação.</p>
+        </div>
+
+        <div *ngIf="notifications.length > 0" class="notification-list">
+          <button *ngFor="let notification of notifications" type="button" class="notification-item"
+            [class.unread]="!notification.isRead" (click)="openNotification(notification)">
+            <mat-icon>
+              {{ getNotificationIcon(notification.type) }}
+            </mat-icon>
+
+            <div>
+              <strong>{{ notification.title }}</strong>
+              <p>{{ notification.message }}</p>
+              <small>{{ notification.createdAt | date:'dd/MM/yyyy HH:mm' }}</small>
+            </div>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
 
     <button (click)="toggleTheme()" class="theme-button">
       <mat-icon>

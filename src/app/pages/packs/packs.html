@@ -1,5 +1,7 @@
 <div class="packs-page app-text p-4 md:p-10">
 
+  <!-- TITULO -->
+
   <h1 class="packs-title">
     Packs de Figurinhas
   </h1>
@@ -8,6 +10,8 @@
     Escolha um álbum e depois selecione o pack desejado.
   </p>
 
+  <!-- SELECT ÁLBUM -->
+
   <div class="app-card rounded-3xl p-6 mb-10">
 
     <label class="block app-muted text-sm mb-3">
@@ -15,6 +19,7 @@
     </label>
 
     <select [(ngModel)]="selectedAlbumId" class="album-select">
+
       <option value="">
         Selecione um álbum
       </option>
@@ -22,253 +27,188 @@
       <option *ngFor="let album of albums" [value]="album.id">
         {{ album.themeName }}
       </option>
+
     </select>
 
   </div>
 
-  <!-- GRID PACKS -->
+  <!-- GRID DOS PACKS -->
 
-  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
 
-    <!-- PACK GRÁTIS -->
+  <!-- PACK GRÁTIS -->
 
-    <div class="pack-card rarity-common rounded-3xl p-8
-         bg-gradient-to-br from-emerald-900 to-emerald-600
-         shadow-[0_0_40px_rgba(16,185,129,0.25)]">
+  <div
+    *ngIf="freePack"
+    class="pack-card rarity-common rounded-3xl p-8
+    bg-gradient-to-br from-emerald-900 to-emerald-600
+    shadow-[0_0_40px_rgba(16,185,129,0.25)]"
+  >
 
-      <!-- IMAGEM DO PACK -->
+    <div class="flex justify-center mb-6">
+      <img
+        src="assets/packs/pack-gratis.png"
+        alt="Pack Grátis"
+        class="pack-img"
+      />
+    </div>
 
-      <div class="flex justify-center mb-6">
+    <p class="text-emerald-300 text-sm font-bold uppercase tracking-widest mb-2 text-center">
+      Pack Diário Gratuito
+    </p>
 
-        <img src="assets/packs/pack-gratis.png" alt="Pack Grátis" class="pack-img" />
+    <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4 text-center">
+      Recompensa Diária
+    </h2>
 
+    <span class="pack-price-badge price-small">
+      {{ freePack.price | currency:'BRL':'symbol':'1.2-2' }}
+    </span>
+
+    <p class="text-emerald-100 mb-8 text-sm text-center">
+      {{ freePack.stickerQuantity }} figurinhas por dia.
+      Apenas figurinhas comuns.
+    </p>
+
+    <div class="space-y-2 mb-8 text-sm text-white">
+
+      <div class="flex justify-between free">
+        <span>COMMON</span>
+        <span>{{ freePack.commonChance }}%</span>
       </div>
 
-      <!-- TAG -->
+      <div class="flex justify-between free">
+        <span>RARE</span>
+        <span>{{ freePack.rareChance }}%</span>
+      </div>
 
-      <p class="text-emerald-300 text-sm font-bold uppercase tracking-widest mb-2 text-center">
-        Pack Diário Gratuito
-      </p>
+      <div class="flex justify-between free">
+        <span>EPIC</span>
+        <span>{{ freePack.epicChance }}%</span>
+      </div> 
 
-      <!-- TITULO -->
-
-      <h2 class="text-2xl lg:text-3xl font-bold text-white mb-4 text-center">
-        Recompensa Diária
-      </h2>
-
-      <!-- DESCRIÇÃO -->
-
-      <p class="text-emerald-100 mb-8 text-sm text-center">
-        Abra um pack grátis diariamente para ganhar figurinhas comuns e raras.
-      </p>
-
-      <!-- BOTÃO -->
-
-      <button class="w-full bg-white text-emerald-700 hover:bg-zinc-200 py-4 rounded-2xl font-bold transition"
-        (click)="openFreePack()">
-        Abrir Grátis
-      </button>
+      <div class="flex justify-between free">
+        <span>LEGENDARY</span>
+        <span>{{ freePack.legendaryChance }}%</span>
+      </div>
 
     </div>
 
-    <!-- PACK SMALL -->
-
-    <div class="pack-card rarity-common app-card rounded-3xl p-8 overflow-hidden relative">
-
-      <!-- IMAGEM DO PACK -->
-
-      <div class="flex justify-center mb-6">
-
-        <img src="assets/packs/pack-pequeno.png" alt="Pack Pequeno" class="pack-img" />
-
-      </div>
-
-      <!-- TITULO -->
-
-      <h2 class="text-2xl lg:text-3xl font-bold text-emerald-400 mb-4 text-center">
-        Pack Pequeno
-      </h2>
-
-      <!-- PREÇO -->
-
-      <span class="block bg-emerald-500/20 text-emerald-300 px-4 py-2 rounded-full text-sm font-bold mb-6 text-center">
-        R$ 4,99
-      </span>
-
-      <!-- DESCRIÇÃO -->
-
-      <p class="app-muted mb-6 text-center">
-        Ideal para iniciantes.
-      </p>
-
-      <!-- CHANCES -->
-
-      <div class="space-y-2 mb-8 text-sm">
-
-        <div class="flex justify-between">
-          <span class="app-muted">COMMON</span>
-          <span>80%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-blue-400">RARE</span>
-          <span>15%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-purple-400">EPIC</span>
-          <span>4%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-yellow-400">LEGENDARY</span>
-          <span>1%</span>
-        </div>
-
-      </div>
-
-      <!-- BOTÃO -->
-
-      <button class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-bold transition"
-        (click)="openPack('SMALL')">
-        Comprar Pack
-      </button>
-
-    </div>
-
-    <!-- PACK PREMIUM -->
-
-    <div class="pack-card rarity-rare app-card rounded-3xl p-8">
-
-      <!-- IMAGEM DO PACK -->
-
-      <div class="flex justify-center mb-6">
-
-        <img src="assets/packs/pack-premium.png" alt="Pack Premium" class="pack-img" />
-
-      </div>
-
-      <!-- TITULO -->
-
-      <h2 class="text-2xl lg:text-3xl font-bold text-blue-400 mb-4 text-center">
-        Pack Premium
-      </h2>
-
-      <!-- PREÇO -->
-
-      <span class="block bg-blue-500/20 text-blue-300 px-4 py-2 rounded-full text-sm font-bold mb-6 text-center">
-        R$ 49,99
-      </span>
-
-      <!-- DESCRIÇÃO -->
-
-      <p class="app-muted mb-6 text-center">
-        Chance elevada de cartas raras.
-      </p>
-
-      <!-- CHANCES -->
-
-      <div class="space-y-2 mb-8 text-sm">
-
-        <div class="flex justify-between">
-          <span class="app-muted">COMMON</span>
-          <span>55%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-blue-400">RARE</span>
-          <span>30%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-purple-400">EPIC</span>
-          <span>12%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-yellow-400">LEGENDARY</span>
-          <span>3%</span>
-        </div>
-
-      </div>
-
-      <!-- BOTÃO -->
-
-      <button class="w-full bg-blue-500 hover:bg-blue-600 py-4 rounded-2xl font-bold transition text-white"
-        (click)="openPack('MEDIUM')">
-        Comprar Pack
-      </button>
-
-    </div>
-
-    <!-- PACK ELITE -->
-
-    <div class="pack-card rarity-legendary app-card rounded-3xl p-8">
-
-      <!-- IMAGEM DO PACK -->
-
-      <div class="flex justify-center mb-6">
-
-        <img src="assets/packs/pack-elite.png" alt="Pack Elite" class="pack-img" />
-
-      </div>
-
-      <!-- TITULO -->
-
-      <h2 class="text-2xl lg:text-3xl font-bold text-yellow-400 mb-4 text-center">
-        Pack Elite
-      </h2>
-
-      <!-- PREÇO -->
-
-      <span class="block bg-yellow-500/20 text-yellow-300 px-4 py-2 rounded-full text-sm font-bold mb-6 text-center">
-        R$ 99,99
-      </span>
-
-      <!-- DESCRIÇÃO -->
-
-      <p class="app-muted mb-6 text-center">
-        Alta chance de cartas épicas e lendárias.
-      </p>
-
-      <!-- CHANCES -->
-
-      <div class="space-y-2 mb-8 text-sm">
-
-        <div class="flex justify-between">
-          <span class="app-muted">COMMON</span>
-          <span>35%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-blue-400">RARE</span>
-          <span>40%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-purple-400">EPIC</span>
-          <span>20%</span>
-        </div>
-
-        <div class="flex justify-between">
-          <span class="text-yellow-400">LEGENDARY</span>
-          <span>5%</span>
-        </div>
-
-      </div>
-
-      <!-- BOTÃO -->
-
-      <button class="w-full bg-yellow-500 hover:bg-yellow-600 text-black py-4 rounded-2xl font-bold transition"
-        (click)="openPack('LARGE')">
-        Comprar Pack
-      </button>
-
-    </div>
+    <button
+      class="w-full bg-white text-emerald-700 hover:bg-zinc-200 py-4 rounded-2xl font-bold transition"
+      (click)="openFreePack()"
+    >
+      Abrir Grátis
+    </button>
 
   </div>
 
-  <!-- FIGURINHAS -->
+  <!-- PACKS PAGOS -->
+
+  <div
+    *ngFor="let pack of paidPacks"
+    class="pack-card app-card rounded-3xl p-8"
+    [ngClass]="{
+      'rarity-common': pack.type === 'SMALL',
+      'rarity-rare': pack.type === 'MEDIUM',
+      'rarity-legendary': pack.type === 'LARGE'
+    }"
+  >
+
+    <div class="flex justify-center mb-6">
+
+      <img
+        [src]="
+          pack.type === 'SMALL'
+            ? 'assets/packs/pack-pequeno.png'
+            : pack.type === 'MEDIUM'
+            ? 'assets/packs/pack-premium.png'
+            : 'assets/packs/pack-elite.png'
+        "
+        [alt]="pack.name"
+        class="pack-img"
+      />
+
+    </div>
+
+    <h2
+      class="text-2xl lg:text-3xl font-bold mb-4 text-center"
+      [ngClass]="{
+        'text-emerald-400': pack.type === 'SMALL',
+        'text-blue-400': pack.type === 'MEDIUM',
+        'text-yellow-400': pack.type === 'LARGE'
+      }"
+    >
+      {{ pack.name }}
+    </h2>
+
+    <span
+      class="pack-price-badge"
+      [ngClass]="{
+        'price-small': pack.type === 'SMALL',
+        'price-premium': pack.type === 'MEDIUM',
+        'price-elite': pack.type === 'LARGE'
+      }"
+    >
+      {{ pack.price | currency:'BRL':'symbol':'1.2-2' }}
+    </span>
+
+    <p class="app-muted mb-6 text-center">
+      {{
+        pack.type === 'SMALL'
+          ? 'Ideal para iniciantes.'
+          : pack.type === 'MEDIUM'
+          ? 'Chance elevada de cartas raras, épicas e lendárias.'
+          : 'Garante pelo menos uma figurinha lendária.'
+      }}
+    </p>
+
+    <div class="space-y-2 mb-8 text-sm">
+
+      <div class="flex justify-between">
+        <span class="app-muted">COMMON</span>
+        <span>{{ pack.commonChance }}%</span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="text-blue-400">RARE</span>
+        <span>{{ pack.rareChance }}%</span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="text-purple-400">EPIC</span>
+        <span>{{ pack.epicChance }}%</span>
+      </div>
+
+      <div class="flex justify-between">
+        <span class="text-yellow-400">LEGENDARY</span>
+        <span>
+          {{ pack.legendaryChance }}%
+          <span *ngIf="pack.guaranteedLegendary">
+            + garantida
+          </span>
+        </span>
+      </div>
+
+    </div>
+
+    <button
+      class="w-full py-4 rounded-2xl font-bold transition"
+      [ngClass]="{
+        'bg-emerald-500 hover:bg-emerald-600': pack.type === 'SMALL',
+        'bg-blue-500 hover:bg-blue-600 text-white': pack.type === 'MEDIUM',
+        'bg-yellow-500 hover:bg-yellow-600 text-black': pack.type === 'LARGE'
+      }"
+      (click)="openPack(pack.type)"
+    >
+      Comprar Pack
+    </button>
+
+  </div>
+
+</div>
+
+  <!-- FIGURINHAS RECEBIDAS -->
 
   <div *ngIf="revealedStickers.length > 0" class="mt-16">
 
@@ -276,36 +216,67 @@
       Figurinhas recebidas
     </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div class="stickers-grid reveal-grid">
 
       <div *ngFor="let sticker of revealedStickers" class="sticker-card relative group" [ngClass]="{
-          'rarity-common': sticker.rarity === 'COMMON',
-          'rarity-rare': sticker.rarity === 'RARE',
-          'rarity-epic': sticker.rarity === 'EPIC',
-          'rarity-legendary': sticker.rarity === 'LEGENDARY'
+
+          'rarity-common':
+            sticker.rarity === 'COMMON',
+
+          'rarity-rare':
+            sticker.rarity === 'RARE',
+
+          'rarity-epic':
+            sticker.rarity === 'EPIC',
+
+          'rarity-legendary':
+            sticker.rarity === 'LEGENDARY'
+
         }">
 
-        <!-- HOLOGRÁFICO -->
+        <!-- EFEITO HOLO -->
 
-        <div *ngIf="sticker.rarity === 'EPIC' || sticker.rarity === 'LEGENDARY'"
-          class="absolute inset-0 z-10 opacity-30 pointer-events-none bg-gradient-to-br from-white/40 via-transparent to-white/10 animate-holo">
+        <div *ngIf="
+            sticker.rarity === 'EPIC'
+            || sticker.rarity === 'LEGENDARY'
+          " class="absolute inset-0 z-10 opacity-30 pointer-events-none
+          bg-gradient-to-br from-white/40 via-transparent to-white/10
+          animate-holo">
         </div>
 
         <!-- NUMERO -->
 
-        <div class="absolute top-3 left-3 z-20 bg-black/70 backdrop-blur px-3 py-1 rounded-full text-xs font-bold">
+        <div class="absolute top-3 left-3 z-20
+          bg-black/70 backdrop-blur
+          px-3 py-1 rounded-full
+          text-xs font-bold">
+
           #{{ sticker.number }}
+
         </div>
 
         <!-- RARIDADE -->
 
-        <div class="absolute top-3 right-3 z-20 px-3 py-1 rounded-full text-xs font-bold" [ngClass]="{
-            'bg-zinc-800 text-zinc-300': sticker.rarity === 'COMMON',
-            'bg-blue-950 text-blue-300': sticker.rarity === 'RARE',
-            'bg-purple-950 text-purple-300': sticker.rarity === 'EPIC',
-            'bg-yellow-400 text-black': sticker.rarity === 'LEGENDARY'
+        <div class="absolute top-3 right-3 z-20
+          px-3 py-1 rounded-full
+          text-xs font-bold" [ngClass]="{
+
+            'bg-zinc-800 text-zinc-300':
+              sticker.rarity === 'COMMON',
+
+            'bg-blue-950 text-blue-300':
+              sticker.rarity === 'RARE',
+
+            'bg-purple-950 text-purple-300':
+              sticker.rarity === 'EPIC',
+
+            'bg-yellow-400 text-black':
+              sticker.rarity === 'LEGENDARY'
+
           }">
+
           {{ sticker.rarity }}
+
         </div>
 
         <!-- IMAGEM -->
@@ -315,9 +286,10 @@
 
         <!-- INFO -->
 
-        <div class="absolute bottom-0 left-0 right-0 z-20 bg-black/75 p-4">
+        <div class="absolute bottom-0 left-0 right-0
+          z-20 bg-black/75 p-4">
 
-          <h3 class="font-bold text-xl text-white leading-tight ">
+          <h3 class="font-bold text-xl text-white leading-tight">
             {{ sticker.name }}
           </h3>
 
@@ -337,22 +309,29 @@
 
 <!-- LOADING -->
 
-<div *ngIf="loading" class="loading-pack fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+<div *ngIf="loading" class="loading-pack fixed inset-0
+  bg-black/90 z-50
+  flex items-center justify-center">
 
   <div class="relative flex flex-col items-center">
 
     <!-- GLOW -->
 
-    <div class="absolute w-72 h-72 rounded-full bg-emerald-500 blur-3xl opacity-40 animate-pulse"></div>
+    <div class="absolute w-72 h-72 rounded-full
+      bg-emerald-500 blur-3xl
+      opacity-40 animate-pulse">
+    </div>
 
-    <!-- IMAGEM DO PACK -->
+    <!-- PACK -->
 
-    <img [src]="selectedPackImage" alt="Abrindo Pack"
-      class="relative z-10 w-56 md:w-72 animate-pack-opening drop-shadow-[0_0_60px_rgba(16,185,129,0.8)]" />
+    <img [src]="selectedPackImage" alt="Abrindo Pack" class="relative z-10
+      w-56 md:w-72
+      animate-pack-opening
+      drop-shadow-[0_0_60px_rgba(16,185,129,0.8)]" />
 
     <!-- TEXTO -->
 
-    <p class="mt-8 text-3xl font-black text-white tracking-wide app-muted">
+    <p class="mt-8 text-3xl font-black text-white tracking-wide">
       Abrindo Pack...
     </p>
 

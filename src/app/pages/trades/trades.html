@@ -12,10 +12,7 @@
     <div class="trade-search-input">
       <mat-icon>qr_code_2</mat-icon>
 
-      <input
-        [(ngModel)]="tradeCode"
-        placeholder="Digite o ID de troca. Ex: C&T#0003"
-      />
+      <input [(ngModel)]="tradeCode" placeholder="Digite o ID de troca. Ex: C&T#0003" />
     </div>
 
     <button (click)="searchCollector()">
@@ -24,15 +21,9 @@
 
   </section>
 
-  <section
-    *ngIf="receiver"
-    class="collector-card"
-  >
+  <section *ngIf="receiver" class="collector-card">
 
-    <img
-      *ngIf="receiver.avatarUrl"
-      [src]="receiver.avatarUrl"
-    />
+    <img *ngIf="receiver.avatarUrl" [src]="receiver.avatarUrl" />
 
     <div class="collector-avatar-fallback" *ngIf="!receiver.avatarUrl">
       {{ receiver.nickname?.[0] || receiver.name?.[0] || 'U' }}
@@ -51,36 +42,52 @@
       <h2>Suas figurinhas repetidas</h2>
       <p>Escolha quais figurinhas deseja oferecer.</p>
     </div>
+    <!-- ==============================filters -->
+    <div class="trade-filters modal-filter">
 
+      <select [(ngModel)]="modalSelectedAlbum">
+        <option value="">Todos os álbuns</option>
+
+        <option *ngFor="let album of albums" [value]="album">
+          {{ album }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="modalSelectedRarity">
+        <option value="">Todas as raridades</option>
+
+        <option *ngFor="let rarity of rarities" [value]="rarity">
+          {{ rarity }}
+        </option>
+      </select>
+
+      <select [(ngModel)]="modalSelectedLimit">
+        <option *ngFor="let limit of limits" [value]="limit">
+          {{ limit }} cartas
+        </option>
+      </select>
+
+    </div>
+    <!-- ============================================= -->
+    <!-- ==========================================lista de figurinhas -->
     <div *ngIf="loading" class="trade-loading">
       Carregando figurinhas...
     </div>
 
-    <div
-      *ngIf="!loading && myStickers.length === 0"
-      class="trade-empty"
-    >
+    <div *ngIf="!loading && myStickers.length === 0" class="trade-empty">
       <mat-icon>style</mat-icon>
       <h3>Você não possui figurinhas repetidas disponíveis.</h3>
       <p>Abra packs para conseguir repetidas e iniciar trocas.</p>
     </div>
 
-    <div
-      *ngIf="!loading && myStickers.length > 0"
-      class="trade-stickers-grid"
-    >
+    <div *ngIf="!loading && myStickers.length > 0" class="trade-stickers-grid">
 
-      <button
-        *ngFor="let sticker of myStickers"
-        class="trade-sticker-card"
-        [class.selected]="offeredStickerIds.includes(sticker.id)"
-        (click)="toggleOfferedSticker(sticker.id)"
-      >
+      <button *ngFor="let sticker of modalFilteredTradeStickers" class="trade-sticker-card"
+        [class.selected]="offeredStickerIds.includes(sticker.id)" [class.common]="sticker.rarity === 'COMMON'"
+        [class.rare]="sticker.rarity === 'RARE'" [class.epic]="sticker.rarity === 'EPIC'"
+        [class.legendary]="sticker.rarity === 'LEGENDARY'" (click)="toggleOfferedSticker(sticker.id)">
 
-        <img
-          [src]="sticker.imageUrl"
-          [alt]="sticker.name"
-        />
+        <img [src]="sticker.imageUrl" [alt]="sticker.name" />
 
         <div class="trade-sticker-info">
           <span>Nº {{ sticker.number }}</span>
@@ -94,12 +101,8 @@
     </div>
 
   </section>
-
-  <section
-    *ngIf="receiver && offeredStickerIds.length > 0"
-    class="trade-submit-card"
-  >
-
+  <!-- =====================================proposta -->
+  <section *ngIf="receiver && offeredStickerIds.length > 0" class="trade-submit-card">
     <div>
       <strong>
         {{ offeredStickerIds.length }} figurinha(s) selecionada(s)
@@ -113,52 +116,228 @@
     <button (click)="createTrade()">
       Enviar Proposta
     </button>
-
   </section>
+  <!-- ================================================================ -->
+  <section class="trade-tabs-wrapper">
 
-  <section class="trade-section">
+    <div class="trade-tabs">
 
-    <div class="section-title">
-      <h2>Minhas propostas</h2>
-      <p>Acompanhe trocas enviadas e recebidas.</p>
+      <button [class.active]="activeTab === 'active'" (click)="activeTab = 'active'">
+        Em andamento
+      </button>
+
+      <button [class.active]="activeTab === 'sent'" (click)="activeTab = 'sent'">
+        Enviadas
+      </button>
+
+      <button [class.active]="activeTab === 'history'" (click)="activeTab = 'history'">
+        Histórico
+      </button>
+
     </div>
 
-    <div
-      *ngIf="myTrades.length === 0"
-      class="trade-empty small"
-    >
-      <mat-icon>swap_horiz</mat-icon>
-      <h3>Nenhuma proposta encontrada.</h3>
-    </div>
+    <div class="trade-tab-content">
 
-    <div
-      *ngIf="myTrades.length > 0"
-      class="trades-list"
-    >
+      <!-- EM ANDAMENTO -->
+      <div *ngIf="activeTab === 'active'">
 
-      <div
-        *ngFor="let trade of myTrades"
-        class="trade-item"
-      >
-
-        <div>
-          <strong>
-            {{ trade.sender?.nickname || trade.sender?.name || 'Usuário' }}
-            →
-            {{ trade.receiver?.nickname || trade.receiver?.name || 'Usuário' }}
-          </strong>
-
-          <p>Status: {{ trade.status }}</p>
+        <div *ngIf="activeTrades.length === 0" class="trade-empty small">
+          <mat-icon>inbox</mat-icon>
+          <h3>Nenhuma proposta recebida.</h3>
         </div>
 
-        <span>
-          {{ trade.items?.length || 0 }} item(ns)
-        </span>
+        <div *ngIf="activeTrades.length > 0" class="trades-list">
+          <div *ngFor="let trade of activeTrades" class="trade-item all" (click)="openTradeDetails(trade)">
+            <div class="trade-card-info">
+
+              <strong>
+                {{ trade.sender?.nickname || trade.sender?.name }}
+                →
+                {{ trade.receiver?.nickname || trade.receiver?.name }}
+              </strong>
+
+              <span>
+                {{ getTradeStatusLabel(trade.status) }}
+              </span>
+
+              <small>
+                Criada em {{ trade.createdAt | date:'dd/MM/yyyy HH:mm' }}
+              </small>
+
+            </div>
+
+            <strong class="trade-items-count">
+              {{ trade.items?.length || 0 }} item(ns)
+            </strong>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ENVIADAS -->
+      <div *ngIf="activeTab === 'sent'">
+
+        <div *ngIf="sentTrades.length === 0" class="trade-empty small">
+          <mat-icon>send</mat-icon>
+          <h3>Nenhuma proposta enviada.</h3>
+        </div>
+
+        <div *ngIf="sentTrades.length > 0" class="trades-list">
+          <div *ngFor="let trade of sentTrades" class="trade-item" (click)="openTradeDetails(trade)">
+            <div>
+              <strong>
+                {{ trade.receiver?.nickname }}
+              </strong>
+
+              <p>
+                Aguardando resposta
+              </p>
+            </div>
+
+            <span>
+              {{ trade.items?.length || 0 }}
+              item(ns)
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- HISTÓRICO -->
+      <div *ngIf="activeTab === 'history'">
+
+        <div *ngIf="historyTrades.length === 0" class="trade-empty small">
+          <mat-icon>history</mat-icon>
+          <h3>Nenhum histórico encontrado.</h3>
+        </div>
+
+        <div *ngIf="historyTrades.length > 0" class="trades-list">
+          <div *ngFor="let trade of historyTrades" class="trade-item history" (click)="openTradeDetails(trade)">
+            <div>
+              <strong>
+                {{ trade.sender?.nickname }}
+                →
+                {{ trade.receiver?.nickname }}
+              </strong>
+
+              <p>
+                {{ trade.status }}
+              </p>
+            </div>
+
+            <span>
+              {{ trade.items?.length || 0 }}
+              item(ns)
+            </span>
+          </div>
+        </div>
 
       </div>
 
     </div>
 
   </section>
+  <!-- =================================================modal -->
+  <div *ngIf="selectedTrade" class="trade-modal-overlay" (click)="closeTradeDetails()">
+    <div class="trade-modal" (click)="$event.stopPropagation()">
+      <h2>Detalhes da Troca</h2>
+
+      <p class="trade-modal-status">
+        Status:
+        <strong>{{ selectedTrade.status }}</strong>
+      </p>
+
+      <h3>Figurinhas da proposta</h3>
+
+      <div class="trade-modal-grid">
+        <div *ngFor="let item of selectedTrade.items" class="trade-modal-card"
+          [class.common]="item.userSticker.sticker.rarity === 'COMMON'"
+          [class.rare]="item.userSticker.sticker.rarity === 'RARE'"
+          [class.epic]="item.userSticker.sticker.rarity === 'EPIC'"
+          [class.legendary]="item.userSticker.sticker.rarity === 'LEGENDARY'">
+          <img [src]="item.userSticker.sticker.imageUrl" />
+
+          <strong>{{ item.userSticker.sticker.name }}</strong>
+          <span>Nº {{ item.userSticker.sticker.number }}</span>
+          <small>{{ item.userSticker.album.themeName }}</small>
+        </div>
+      </div>
+
+      <div *ngIf="selectedTrade.status === 'PENDING'" class="counter-area">
+        <div class="counter-title-row">
+          <h3>Escolha suas figurinhas para contraproposta</h3>
+
+          <span *ngIf="counterStickerIds.length > 0" class="selected-counter-badge">
+            {{ counterStickerIds.length }} selecionada(s)
+          </span>
+        </div>
+        <!-- ========================================================================== -->
+
+        <!-- ========================================selects -->
+        <div class="trade-filters">
+
+          <select [(ngModel)]="selectedAlbum">
+            <option value="">Todos os álbuns</option>
+
+            <option *ngFor="let album of albums" [value]="album">
+              {{ album }}
+            </option>
+          </select>
+
+          <select [(ngModel)]="selectedRarity">
+            <option value="">Todas as raridades</option>
+
+            <option *ngFor="let rarity of rarities" [value]="rarity">
+              {{ rarity }}
+            </option>
+          </select>
+
+          <select [(ngModel)]="selectedLimit">
+            <option *ngFor="let limit of limits" [value]="limit">
+              {{ limit }} cartas
+            </option>
+          </select>
+
+        </div>
+        <!-- ====================================================== -->
+
+        <div class="trade-modal-grid">
+          <button *ngFor="let sticker of filteredTradeStickers" class="trade-modal-card selectable"
+            [class.common]="sticker.rarity === 'COMMON'" [class.rare]="sticker.rarity === 'RARE'"
+            [class.epic]="sticker.rarity === 'EPIC'" [class.legendary]="sticker.rarity === 'LEGENDARY'"
+            [class.selected]="counterStickerIds.includes(sticker.id)" (click)="toggleCounterSticker(sticker.id)">
+
+            <img [src]="sticker.imageUrl" />
+
+            <strong>{{ sticker.name }}</strong>
+            <span>Nº {{ sticker.number }}</span>
+            <small>{{ sticker.albumName }}</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="trade-modal-actions">
+        <button class="neutral" (click)="closeTradeDetails()">
+          Fechar
+        </button>
+
+        <button *ngIf="selectedTrade.status === 'PENDING'" class="danger" (click)="rejectTrade(selectedTrade)">
+          Rejeitar
+        </button>
+
+        <button *ngIf="selectedTrade.status === 'PENDING'" class="primary" (click)="sendCounterTrade()">
+          Enviar Contraproposta
+        </button>
+
+        <button *ngIf="selectedTrade.status === 'COUNTERED'" class="success" (click)="acceptTrade(selectedTrade)">
+          Aceitar Troca
+        </button>
+
+        <button *ngIf="selectedTrade.status === 'PENDING'" class="warning" (click)="cancelTrade(selectedTrade)">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
 
 </div>
