@@ -108,18 +108,6 @@
 
       <div *ngIf="!loading && messages.length > 0" class="messages-list">
 
-        <div *ngIf="!loading && hasMoreMessages" class="load-more-messages">
-          <button type="button" [disabled]="loadingMoreMessages" (click)="loadMoreMessages()">
-            <mat-icon>history</mat-icon>
-
-            {{
-            loadingMoreMessages
-            ? 'Carregando...'
-            : 'Carregar mensagens antigas'
-            }}
-          </button>
-        </div>
-
         <article *ngFor="let message of messages" class="message-card" [id]="'message-' + message.id"
           [class.mine]="isMine(message)" [class.pinned]="message.isPinned"
           [class.highlighted]="highlightedMessageId === message.id">
@@ -206,6 +194,18 @@
           </div>
 
         </article>
+
+        <div *ngIf="!loading && hasMoreMessages" class="load-more-messages">
+          <button type="button" [disabled]="loadingMoreMessages" (click)="loadMoreMessages()">
+            <mat-icon>history</mat-icon>
+
+            {{
+            loadingMoreMessages
+            ? 'Carregando...'
+            : 'Carregar mensagens antigas'
+            }}
+          </button>
+        </div>
 
       </div>
 
