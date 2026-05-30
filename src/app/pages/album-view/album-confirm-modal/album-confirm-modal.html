@@ -1,0 +1,21 @@
+<div class="album-confirm-overlay" (click)="cancel.emit()">
+  <div class="album-confirm-modal" (click)="$event.stopPropagation()">
+    <div class="album-confirm-icon">+</div>
+
+    <h2>Colar todas as figurinhas deste álbum?</h2>
+
+    <p>
+      Você irá colar {{ pendingTotal }} figurinha(s) disponível(is) automaticamente neste álbum.
+    </p>
+
+    <div class="album-confirm-actions">
+      <button type="button" class="cancel" [disabled]="placing" (click)="cancel.emit()">
+        Cancelar
+      </button>
+
+      <button type="button" class="confirm" [disabled]="placing" (click)="confirmPlace.emit()">
+        {{ placing ? 'Colando...' : 'Confirmar' }}
+      </button>
+    </div>
+  </div>
+</div>

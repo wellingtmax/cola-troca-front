@@ -1,0 +1,164 @@
+.sticker-zoom-overlay {
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(14px);
+  animation: fadeZoomOverlay 0.25s ease;
+}
+
+.sticker-zoom-container {
+  position: relative;
+  width: 320px;
+  max-width: 88vw;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #09090b;
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+  animation: stickerZoomIn 0.35s ease;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.70);
+}
+
+.zoom-close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.66);
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 950;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: 0.2s ease;
+}
+
+.zoom-close-button:hover {
+  background: #ef4444;
+  transform: scale(1.08);
+}
+
+.zoom-sticker-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex: 1;
+}
+
+.zoom-sticker-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 8;
+  padding: 20px;
+  color: #ffffff;
+  background:
+    linear-gradient(to top,
+      rgba(0, 0, 0, 0.98),
+      rgba(0, 0, 0, 0.62),
+      rgba(0, 0, 0, 0.08));
+}
+
+.zoom-sticker-info span {
+  display: inline-flex;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.zoom-sticker-info h2 {
+  margin: 14px 0 8px;
+  font-size: 24px;
+  line-height: 1.05;
+  font-weight: 950;
+}
+
+.zoom-sticker-info strong {
+  display: inline-flex;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: #18181b;
+  font-size: 13px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+}
+
+.zoom-rare {
+  box-shadow: 0 0 55px rgba(59, 130, 246, 0.75);
+}
+
+.zoom-epic {
+  box-shadow: 0 0 65px rgba(168, 85, 247, 0.85);
+}
+
+.zoom-legendary {
+  box-shadow: 0 0 90px rgba(250, 204, 21, 0.95);
+}
+
+.zoom-holo-effect {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.18) 35%,
+      rgba(255, 255, 255, 0.75) 50%,
+      rgba(255, 255, 255, 0.18) 65%,
+      transparent 100%);
+  mix-blend-mode: screen;
+  animation: holoZoomMove 2.4s linear infinite;
+}
+
+@keyframes holoZoomMove {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+
+  to {
+    transform: translateX(120%) skewX(-18deg);
+  }
+}
+
+@keyframes stickerZoomIn {
+  from {
+    transform: scale(0.72) translateY(42px);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeZoomOverlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1180px) {
+  .sticker-zoom-container {
+    width: 245px;
+  }
+
+  .zoom-sticker-info h2 {
+    font-size: 20px;
+  }
+}

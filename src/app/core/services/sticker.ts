@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ApiResponse } from '../../interfaces/api-response.interface';
+import { API_BASE_URL } from '../api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,7 @@ export class StickerService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:3000/api/stickers';
+  private readonly apiUrl = `${API_BASE_URL}/stickers`;
 
   findMyStickers() {
     return this.http.get<ApiResponse<any[]>>(

@@ -10,13 +10,14 @@ import {
 
 import { ApiResponse } from '../../interfaces/api-response.interface';
 import { User } from '../../interfaces/user.interface';
+import { API_BASE_URL } from '../api.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api/auth';
+  private readonly apiUrl = `${API_BASE_URL}/auth`;
 
   userSignal = signal<User | null>(this.getUser());
 
@@ -38,13 +39,6 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthResponse>>(
       `${this.apiUrl}/register`,
       dto,
-    ).pipe(
-      tap((response) => {
-        localStorage.setItem('token', response.data.access_token);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-
-        this.userSignal.set(response.data.user as User);
-      }),
     );
   }
 

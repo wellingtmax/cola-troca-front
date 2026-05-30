@@ -5,8 +5,6 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { Store } from './pages/store/store';
 import { Library } from './pages/library/library';
 import { Profile } from './pages/profile/profile';
-import { Login } from './pages/login/login';
-import { Register } from './pages/register/register';
 import { authGuard } from './core/guards/auth-guard';
 import { Packs } from './pages/packs/packs';
 import { AlbumView } from './pages/album-view/album-view';
@@ -14,21 +12,28 @@ import { ChatGlobal } from './pages/chat-global/chat-global';
 import { Bafo } from './pages/bafo/bafo';
 import { Stickers } from './pages/stickers/stickers';
 import { Trades } from './pages/trades/trades';
+import { Home } from './pages/home/home';
 
 export const routes: Routes = [
 
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'home',
     pathMatch: 'full',
   },
   {
+    path: 'home',
+    component: Home
+  },
+  {
     path: 'login',
-    component: Login,
+    loadComponent: () =>
+      import('./pages/login/login').then((m) => m.Login),
   },
   {
     path: 'register',
-    component: Register,
+    loadComponent: () =>
+      import('./pages/register/register').then((m) => m.Register),
   },
 
   {
@@ -92,6 +97,6 @@ export const routes: Routes = [
 
   {
     path: '**',
-    redirectTo: 'login',
+    redirectTo: 'home',
   }
 ];

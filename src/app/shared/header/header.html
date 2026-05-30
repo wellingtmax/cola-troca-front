@@ -26,13 +26,13 @@
         </p>
 
         <p class="coins-value">
-          {{ user()?.coins || 0 }}
+          {{ levelUser?.coins ?? user()?.coins ?? 0 }}
         </p>
       </div>
 
     </div>
 
-    <div class="profile-box">
+    <div class="profile-box" [class.can-open-level]="levelInfo" (click)="toggleMobileLevelCard()">
 
       <div class="avatar">
 
@@ -51,14 +51,108 @@
       <div class="profile-info">
 
         <p class="profile-name">
-          {{ user()?.nickname || user()?.name || 'Usuário' }}
+          {{
+          levelUser?.nickname
+          || user()?.nickname
+          || levelUser?.name
+          || user()?.name
+          || 'Usuário'
+          }}
         </p>
 
         <p class="profile-role">
-          Colecionador
+          {{
+          levelInfo?.levelTitle
+          || 'Colecionador Iniciante 1'
+          }}
+          • Nv. {{ levelInfo?.level || 1 }}
         </p>
 
+        <div *ngIf="levelInfo" class="header-level-progress">
+          <div class="header-level-progress-top">
+            <span>
+              XP {{ levelInfo.xp }}
+            </span>
+
+            <small *ngIf="!levelInfo.isMaxLevel">
+              {{ levelInfo.nextLevelXp }} XP
+            </small>
+
+            <small *ngIf="levelInfo.isMaxLevel">
+              Máximo
+            </small>
+          </div>
+
+          <div class="header-level-bar">
+            <div class="header-level-fill" [style.width.%]="levelInfo.progressPercent"></div>
+          </div>
+        </div>
+
       </div>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="showMobileLevelCard && levelInfo" class="mobile-level-overlay" (click)="closeMobileLevelCard()"></div>
+
+  <div *ngIf="showMobileLevelCard && levelInfo" class="mobile-level-panel" (click)="$event.stopPropagation()">
+
+    <div class="mobile-level-header">
+
+      <div>
+        <span>
+          Nível do colecionador
+        </span>
+
+        <strong>
+          {{
+          levelUser?.nickname
+          || user()?.nickname
+          || levelUser?.name
+          || user()?.name
+          || 'Usuário'
+          }}
+        </strong>
+      </div>
+
+      <button type="button" (click)="closeMobileLevelCard()">
+        <mat-icon>close</mat-icon>
+      </button>
+
+    </div>
+
+    <div class="mobile-level-title-row">
+
+      <div>
+        <p>
+          {{ levelInfo.levelTitle }}
+        </p>
+
+        <small>
+          XP {{ levelInfo.xp }} / {{ levelInfo.nextLevelXp || levelInfo.xp }}
+        </small>
+      </div>
+
+      <div class="mobile-level-badge">
+        Nv. {{ levelInfo.level }}
+      </div>
+
+    </div>
+
+    <div class="mobile-level-bar">
+      <div class="mobile-level-fill" [style.width.%]="levelInfo.progressPercent"></div>
+    </div>
+
+    <div class="mobile-level-footer">
+
+      <span *ngIf="!levelInfo.isMaxLevel">
+        Falta {{ levelInfo.xpToNextLevel }} XP para o próximo nível
+      </span>
+
+      <span *ngIf="levelInfo.isMaxLevel">
+        Você alcançou o nível máximo
+      </span>
 
     </div>
 

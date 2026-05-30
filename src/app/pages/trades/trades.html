@@ -247,23 +247,82 @@
         <strong>{{ selectedTrade.status }}</strong>
       </p>
 
-      <h3>Figurinhas da proposta</h3>
+      <div class="trade-split-header receive">
+        <div>
+          <span>Você recebe</span>
+          <h3>
+            Figurinhas de {{ getTradePartnerName(selectedTrade) }}
+          </h3>
+        </div>
 
-      <div class="trade-modal-grid">
-        <div *ngFor="let item of selectedTrade.items" class="trade-modal-card"
+        <strong>
+          {{ getItemsThatIWillReceive(selectedTrade).length }} item(ns)
+        </strong>
+      </div>
+
+      <div *ngIf="getItemsThatIWillReceive(selectedTrade).length > 0" class="trade-modal-grid">
+        <div *ngFor="let item of getItemsThatIWillReceive(selectedTrade)" class="trade-modal-card receive-card"
+          [class.unavailable]="item.isAvailableForTrade === false"
           [class.common]="item.userSticker.sticker.rarity === 'COMMON'"
           [class.rare]="item.userSticker.sticker.rarity === 'RARE'"
           [class.epic]="item.userSticker.sticker.rarity === 'EPIC'"
           [class.legendary]="item.userSticker.sticker.rarity === 'LEGENDARY'">
+
           <img [src]="item.userSticker.sticker.imageUrl" />
 
           <strong>{{ item.userSticker.sticker.name }}</strong>
           <span>Nº {{ item.userSticker.sticker.number }}</span>
           <small>{{ item.userSticker.album.themeName }}</small>
+
+          <em *ngIf="item.isAvailableForTrade === false" class="unavailable-label">
+            Indisponível
+          </em>
         </div>
       </div>
 
-      <div *ngIf="selectedTrade.status === 'PENDING'" class="counter-area">
+      <div *ngIf="getItemsThatIWillReceive(selectedTrade).length === 0" class="trade-empty-split">
+        Nenhuma figurinha para receber nesta proposta.
+      </div>
+
+      <div class="trade-split-header send">
+        <div>
+          <span>Você entrega</span>
+          <h3>
+            Suas figurinhas nesta troca
+          </h3>
+        </div>
+
+        <strong>
+          {{ getItemsThatIWillSend(selectedTrade).length }} item(ns)
+        </strong>
+      </div>
+
+      <div *ngIf="getItemsThatIWillSend(selectedTrade).length > 0" class="trade-modal-grid">
+
+        <div *ngFor="let item of getItemsThatIWillSend(selectedTrade)" class="trade-modal-card send-card"
+          [class.unavailable]="item.isAvailableForTrade === false"
+          [class.common]="item.userSticker.sticker.rarity === 'COMMON'"
+          [class.rare]="item.userSticker.sticker.rarity === 'RARE'"
+          [class.epic]="item.userSticker.sticker.rarity === 'EPIC'"
+          [class.legendary]="item.userSticker.sticker.rarity === 'LEGENDARY'">
+
+          <img [src]="item.userSticker.sticker.imageUrl" />
+
+          <strong>{{ item.userSticker.sticker.name }}</strong>
+          <span>Nº {{ item.userSticker.sticker.number }}</span>
+          <small>{{ item.userSticker.album.themeName }}</small>
+
+          <em *ngIf="item.isAvailableForTrade === false" class="unavailable-label">
+            Indisponível
+          </em>
+        </div>
+      </div>
+
+      <div *ngIf="getItemsThatIWillSend(selectedTrade).length === 0" class="trade-empty-split">
+        Você ainda não adicionou figurinhas para entregar nesta troca.
+      </div>
+
+      <div *ngIf="canCounterTrade(selectedTrade)" class="counter-area">
         <div class="counter-title-row">
           <h3>Escolha suas figurinhas para contraproposta</h3>
 
@@ -321,19 +380,19 @@
           Fechar
         </button>
 
-        <button *ngIf="selectedTrade.status === 'PENDING'" class="danger" (click)="rejectTrade(selectedTrade)">
+        <button *ngIf="canRejectTrade(selectedTrade)" class="danger" (click)="rejectTrade(selectedTrade)">
           Rejeitar
         </button>
 
-        <button *ngIf="selectedTrade.status === 'PENDING'" class="primary" (click)="sendCounterTrade()">
+        <button *ngIf="canCounterTrade(selectedTrade)" class="primary" (click)="sendCounterTrade()">
           Enviar Contraproposta
         </button>
 
-        <button *ngIf="selectedTrade.status === 'COUNTERED'" class="success" (click)="acceptTrade(selectedTrade)">
+        <button *ngIf="canAcceptTrade(selectedTrade)" class="success" (click)="acceptTrade(selectedTrade)">
           Aceitar Troca
         </button>
 
-        <button *ngIf="selectedTrade.status === 'PENDING'" class="warning" (click)="cancelTrade(selectedTrade)">
+        <button *ngIf="canCancelTrade(selectedTrade)" class="warning" (click)="cancelTrade(selectedTrade)">
           Cancelar
         </button>
       </div>

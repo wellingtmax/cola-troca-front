@@ -43,8 +43,6 @@ export class Library implements OnInit {
   loadLibrary() {
     this.storeService.myAlbums().subscribe({
       next: (response) => {
-        console.log('Álbuns da BIBLIOTECAS', response.data);
-        
         this.albums = response.data.map((album: any) => ({
           ...album,
 

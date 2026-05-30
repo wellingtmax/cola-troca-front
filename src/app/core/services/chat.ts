@@ -10,6 +10,7 @@ import {
   FriendRequest,
   Friend,
 } from '../../interfaces/chat-message';
+import { API_BASE_URL } from '../api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -17,11 +18,20 @@ import {
 export class ChatService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:3000/api/chat';
+  private readonly apiUrl = `${API_BASE_URL}/chat`;
 
-  findGlobalMessages(page = 1, limit = 30) {
+  findGlobalMessages(page = 1, limit = 30, search = '') {
+    const params = new URLSearchParams();
+
+    params.set('page', String(page));
+    params.set('limit', String(limit));
+
+    if (search.trim()) {
+      params.set('search', search.trim());
+    }
+
     return this.http.get<ApiResponse<ChatMessagesResponse>>(
-      `${this.apiUrl}/global?page=${page}&limit=${limit}`,
+      `${this.apiUrl}/global?${params.toString()}`,
     );
   }
 

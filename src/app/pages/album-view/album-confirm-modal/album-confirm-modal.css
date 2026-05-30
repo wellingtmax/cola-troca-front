@@ -1,0 +1,105 @@
+.album-confirm-overlay {
+  z-index: 9998;
+  background: rgba(0, 0, 0, 0.70);
+  backdrop-filter: blur(10px);
+}
+
+.album-confirm-modal {
+  width: min(460px, 94vw);
+  padding: 34px;
+  border-radius: 34px;
+  text-align: center;
+  box-shadow:
+    0 34px 90px rgba(0, 0, 0, 0.42),
+    0 0 45px rgba(16, 185, 129, 0.22);
+  animation: albumConfirmIn 0.25s ease;
+}
+
+.album-confirm-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 18px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #10b981, #7c3aed);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  font-weight: 950;
+  box-shadow:
+    0 0 0 8px rgba(16, 185, 129, 0.10),
+    0 18px 40px rgba(124, 58, 237, 0.24);
+}
+
+.album-confirm-modal h2 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 950;
+}
+
+.album-confirm-modal p {
+  max-width: 340px;
+  margin: 12px auto 26px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.45;
+  font-weight: 750;
+}
+
+.album-confirm-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.album-confirm-actions button {
+  min-height: 52px;
+  border: none;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 950;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.album-confirm-actions button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.album-confirm-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.album-confirm-actions .cancel {
+  background: #27272a;
+  color: #ffffff;
+}
+
+.album-confirm-actions .confirm {
+  background: linear-gradient(135deg, #10b981, #7c3aed);
+  color: #ffffff;
+}
+
+@keyframes albumConfirmIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+:host-context(.light-theme) .album-confirm-modal {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+@media (max-width: 720px) {
+  .album-confirm-actions {
+    grid-template-columns: 1fr;
+  }
+}

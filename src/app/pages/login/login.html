@@ -1,43 +1,68 @@
-<div class="min-h-screen bg-zinc-950 flex items-center justify-center p-6 text-white">
-    <div class="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
-        <h1 class="text-4xl font-bold text-emerald-400 mb-2">
-            Cola&Troca
-        </h1>
+<app-public-auth-shell
+  activePage="login"
+  pageTitle="Entrar"
+  pageSubtitle="Acesse sua conta e continue sua coleção."
+>
 
-        <p class="text-zinc-400 mb-8">
-            Entre para acessar seus álbuns digitais.
-        </p>
+  <div
+    *ngIf="errorMessage"
+    class="mb-5 rounded-2xl border border-red-500/40 bg-red-500/10 px-5 py-4 text-red-300 text-sm font-bold"
+  >
+    {{ errorMessage }}
+  </div>
 
-        <form class="space-y-5" (ngSubmit)="login()">
-            <input 
-            [(ngModel)]="email"
-            name="email"
-            type="email"
-            placeholder="E-mail"
-            class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-emerald-500"
-            />
+  <div
+    *ngIf="successMessage"
+    class="mb-5 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-5 py-4 text-emerald-300 text-sm font-bold"
+  >
+    {{ successMessage }}
+  </div>
 
-            <input 
-            [(ngModel)]="password"
-            name="password"
-            type="password"
-            placeholder="Senha"
-            class="w-full bg-zinc-950 border border-zinc-700 rounded-2xl px-5 py-4 outline-none focus:border-emerald-500"
-            >
+  <form
+    class="space-y-5"
+    (ngSubmit)="login()"
+  >
 
-            <button 
-            type="submit"
-            class="w-full bg-emerald-500 hover:bg-emerald-600 rounded-2xl py-4 font-bold transition"
-            >
-                {{ loading ? 'Entrando...' : 'Entrar' }}
-            </button>
-        </form>
+    <input
+      [(ngModel)]="email"
+      name="email"
+      type="email"
+      placeholder="E-mail"
+      autocomplete="email"
+      class="auth-input"
+    />
 
-        <p class="text-zinc-400 text-center mt-6">
-            Ainda não tem conta?
-            <a routerLink="/register" class="text-emerald-400 font-bold">
-                Cadastrar
-            </a>
-        </p>
-    </div>
-</div>
+    <input
+      [(ngModel)]="password"
+      name="password"
+      type="password"
+      placeholder="Senha"
+      autocomplete="current-password"
+      class="auth-input"
+    />
+
+    <button
+      type="submit"
+      [disabled]="loading"
+      class="auth-submit-button"
+    >
+      {{ loading ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+  </form>
+
+  <p class="auth-bottom-text">
+    Ainda não tem conta?
+
+    <a routerLink="/register">
+      Criar conta
+    </a>
+  </p>
+
+  <p class="auth-home-link">
+    <a routerLink="/home">
+      Voltar para Home
+    </a>
+  </p>
+
+</app-public-auth-shell>

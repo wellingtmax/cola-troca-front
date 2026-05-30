@@ -117,7 +117,11 @@
 
   <div class="albums-grid">
 
-    <app-album-card *ngFor="let album of filteredAlbums" [album]="album" [showBuyButton]="true" (buyAlbum)="buyAlbum($event)">
+    <app-album-card
+      *ngFor="let album of filteredAlbums"
+      [album]="album"
+      [showBuyButton]="true"
+      (buyAlbum)="buyAlbum($event)">
     </app-album-card>
 
   </div>

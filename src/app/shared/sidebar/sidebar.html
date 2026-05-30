@@ -17,12 +17,22 @@
         Loja
       </p>
 
-      <a routerLink="/loja" routerLinkActive="active-link" class="sidebar-link">
+      <a
+      routerLink="/loja"
+      routerLinkActive="active-link"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
         <mat-icon>store</mat-icon>
         <span>Álbuns</span>
       </a>
 
-      <a routerLink="/packs" routerLinkActive="active-link" class="sidebar-link">
+      <a
+      routerLink="/packs"
+      routerLinkActive="active-link"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
         <mat-icon>inventory_2</mat-icon>
         <span>Packs de Figurinhas</span>
       </a>
@@ -33,7 +43,12 @@
         Minha Conta
       </p>
 
-      <a routerLink="/biblioteca" routerLinkActive="active-link" class="sidebar-link">
+      <a
+      routerLink="/biblioteca"
+      routerLinkActive="active-link"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
 
         <mat-icon>collections_bookmark</mat-icon>
 
@@ -49,7 +64,12 @@
 
       </a>
 
-      <a routerLink="/figurinhas" routerLinkActive="active-link" class="sidebar-link">
+      <a
+      routerLink="/figurinhas"
+      routerLinkActive="active-link"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
         <mat-icon>style</mat-icon>
 
         <div class="sidebar-link-content">
@@ -62,7 +82,12 @@
       </a>
 
 
-      <a routerLink="/trocas" routerLinkActive="sidebar-link-active" class="sidebar-link">
+      <a
+      routerLink="/trocas"
+      routerLinkActive="sidebar-link-active"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
         <mat-icon>swap_horiz</mat-icon>
 
         <div class="sidebar-link-content">
@@ -74,12 +99,22 @@
         </div>
       </a>
 
-      <a routerLink="/bafo" routerLinkActive="sidebar-link-active" class="sidebar-link">
+      <a
+      routerLink="/bafo"
+      routerLinkActive="sidebar-link-active"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
         <mat-icon>sports_esports</mat-icon>
         <span>Bafo Bafo</span>
       </a>
 
-      <a routerLink="/chat-global" routerLinkActive="sidebar-link-active" class="sidebar-link">
+      <a
+      routerLink="/chat-global"
+      routerLinkActive="sidebar-link-active"
+      class="sidebar-link"
+      (click)="closeSidebarOnClick()"
+      >
         <mat-icon>forum</mat-icon>
 
         <div class="sidebar-link-content">
@@ -91,7 +126,12 @@
         </div>
       </a>
 
-      <a routerLink="/perfil" routerLinkActive="active-link" class="sidebar-link">
+      <a
+      routerLink="/perfil"
+      routerLinkActive="active-link"
+      class="sidebar-link"
+     (click)="closeSidebarOnClick()"
+      >
         <mat-icon>person</mat-icon>
         <span>Perfil</span>
       </a>
@@ -127,14 +167,19 @@
           </button>
         </div>
 
-        <div *ngIf="notifications.length === 0" class="notification-empty">
+        <div *ngIf="visibleNotifications.length === 0" class="notification-empty">
           <mat-icon>notifications_none</mat-icon>
-          <p>Nenhuma notificação.</p>
+          <p>Nenhuma notificação pendente.</p>
         </div>
 
-        <div *ngIf="notifications.length > 0" class="notification-list">
-          <button *ngFor="let notification of notifications" type="button" class="notification-item"
-            [class.unread]="!notification.isRead" (click)="openNotification(notification)">
+        <div *ngIf="visibleNotifications.length > 0" class="notification-list">
+          <button
+            *ngFor="let notification of visibleNotifications"
+            type="button"
+            class="notification-item"
+            [class.unread]="!notification.isRead"
+            (click)="openNotification(notification)"
+          >
             <mat-icon>
               {{ getNotificationIcon(notification.type) }}
             </mat-icon>

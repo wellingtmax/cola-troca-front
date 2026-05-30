@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ApiResponse } from '../../interfaces/api-response.interface';
+import { API_BASE_URL } from '../api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ import { ApiResponse } from '../../interfaces/api-response.interface';
 export class TradeService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl = 'http://localhost:3000/api/trades';
+  private readonly apiUrl = `${API_BASE_URL}/trades`;
 
   findUserByTradeCode(tradeCode: string) {
     return this.http.get<ApiResponse<any>>(

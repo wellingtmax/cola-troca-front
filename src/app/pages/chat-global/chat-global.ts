@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,6 +15,7 @@ import {
   FriendRequest,
   Friend,
 } from '../../interfaces/chat-message';
+import { ChatMessageComponent } from './chat-message/chat-message';
 
 @Component({
   selector: 'app-chat-global',
@@ -23,31 +24,35 @@ import {
     CommonModule,
     FormsModule,
     MatIconModule,
+    ChatMessageComponent,
   ],
   templateUrl: './chat-global.html',
   styleUrl: './chat-global.css',
 })
-
-export class ChatGlobal implements OnInit {
+export class ChatGlobal implements OnInit, OnDestroy {
   private readonly chatService = inject(ChatService);
   private readonly alertService = inject(AlertService);
   private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
+  private refreshInterval?: ReturnType<typeof setInterval>;
 
   loading = true;
   sending = false;
 
-  messages: ChatMessage[] = [];
-
-  friendRequests: FriendRequest[] = [];
-  friends: Friend[] = [];
-
   messageText = '';
   replyTo: ChatMessage | null = null;
 
+  showMentionBox = false;
+  mentionSearch = '';
+
   interactions: ChatMessage[] = [];
   showInteractions = false;
+
+  friends: Friend[] = [];
+  messages: ChatMessage[] = [];
+
+  friendRequests: FriendRequest[] = [];
 
   currentUser = this.authService.getUser();
 
@@ -57,18 +62,31 @@ export class ChatGlobal implements OnInit {
   highlightedMessageId: string | null = null;
 
   currentPage = 1;
-  messageLimit = 30;
+  messageLimit = 10;
   hasMoreMessages = false;
   loadingMoreMessages = false;
 
+  chatSearchTerm = '';
+  searchingMessages = false;
+
   ngOnInit(): void {
-    setInterval(() => {
+    this.loadMessages();
+    this.loadFriendRequests();
+    this.loadFriends();
+    this.loadInteractions();
+
+    this.refreshInterval = setInterval(() => {
       this.loadMessages();
       this.loadFriendRequests();
       this.loadFriends();
       this.loadInteractions();
     }, 60000);
+  }
 
+  ngOnDestroy(): void {
+    if (this.refreshInterval) {
+      clearInterval(this.refreshInterval);
+    }
   }
 
   loadMessages() {
@@ -78,6 +96,7 @@ export class ChatGlobal implements OnInit {
     this.chatService.findGlobalMessages(
       this.currentPage,
       this.messageLimit,
+      this.chatSearchTerm,
     ).subscribe({
       next: (response) => {
         this.messages = response.data.messages;
@@ -171,12 +190,87 @@ export class ChatGlobal implements OnInit {
     this.messageText += emoji;
   }
 
-  getInitialLetter(message: ChatMessage) {
+  toggleMentionBox() {
+    this.showMentionBox = !this.showMentionBox;
+
+    if (this.showMentionBox) {
+      this.mentionSearch = '';
+      this.loadFriends();
+    }
+  }
+
+  closeMentionBox() {
+    this.showMentionBox = false;
+    this.mentionSearch = '';
+  }
+
+  getMentionUser(friendItem: any) {
     return (
-      message.user.nickname?.[0] ||
-      message.user.name?.[0] ||
-      'U'
+      friendItem?.friend ||
+      friendItem?.user ||
+      friendItem
     );
+  }
+
+  get mentionableUsers() {
+    const search = this.mentionSearch
+      .trim()
+      .toLowerCase();
+
+    return this.friends
+      .map((friendItem: any) => this.getMentionUser(friendItem))
+      .filter((user: any) => {
+        if (!user) {
+          return false;
+        }
+
+        if (user.id === this.currentUser?.id) {
+          return false;
+        }
+
+        const nickname = user.nickname || '';
+        const name = user.name || '';
+        const tradeCode = user.tradeCode || '';
+
+        const searchable = `
+        ${nickname}
+        ${name}
+        ${tradeCode}
+      `.toLowerCase();
+
+        return !search || searchable.includes(search);
+      });
+  }
+
+  insertMention(user: any) {
+    const mentionName =
+      user?.nickname ||
+      user?.name ||
+      user?.tradeCode;
+
+    if (!mentionName) {
+      this.alertService.warning(
+        'Não foi possível marcar este usuário.',
+      );
+
+      return;
+    }
+
+    const mention = mentionName.startsWith('@')
+      ? mentionName
+      : `@${mentionName}`;
+
+    const currentText = this.messageText.trim();
+
+    this.messageText = currentText
+      ? `${currentText} ${mention} `
+      : `${mention} `;
+
+    this.closeMentionBox();
+  }
+
+  mentionMessageUser(message: ChatMessage) {
+    this.insertMention(message.user);
   }
 
   sendFriendRequest(userId: string) {
@@ -303,6 +397,22 @@ export class ChatGlobal implements OnInit {
     });
   }
 
+  openTradeWithUser(user: any) {
+    if (!user?.tradeCode) {
+      this.alertService.warning(
+        'Este colecionador ainda não possui ID de troca.',
+      );
+
+      return;
+    }
+
+    this.router.navigate(['/trocas'], {
+      queryParams: {
+        tradeCode: user.tradeCode,
+      },
+    });
+  }
+
   goToInteraction(messageId: string) {
     this.highlightedMessageId = messageId;
 
@@ -408,6 +518,7 @@ export class ChatGlobal implements OnInit {
     this.chatService.findGlobalMessages(
       nextPage,
       this.messageLimit,
+      this.chatSearchTerm,
     ).subscribe({
       next: (response) => {
         this.messages = [
@@ -421,10 +532,24 @@ export class ChatGlobal implements OnInit {
       },
       error: () => {
         this.loadingMoreMessages = false;
+
         this.alertService.error(
           'Erro ao carregar mensagens antigas.',
         );
       },
     });
+  }
+  searchMessages() {
+    this.searchingMessages = true;
+
+    setTimeout(() => {
+      this.loadMessages();
+      this.searchingMessages = false;
+    }, 250);
+  }
+
+  clearChatSearch() {
+    this.chatSearchTerm = '';
+    this.loadMessages();
   }
 }

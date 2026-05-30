@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 import { ApiResponse } from '../../interfaces/api-response.interface';
+import { API_BASE_URL } from '../api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,7 @@ import { ApiResponse } from '../../interfaces/api-response.interface';
 export class CollectionService {
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    'http://localhost:3000/api/collection';
+  private readonly apiUrl = `${API_BASE_URL}/collection`;
 
   private readonly pendingRefreshSubject = new Subject<void>();
 
@@ -27,6 +27,7 @@ export class CollectionService {
     );
   }
 
+
   placeSticker(albumId: string, stickerId: string) {
     return this.http.patch<ApiResponse<any>>(
       `${this.apiUrl}/album/${albumId}/sticker/${stickerId}/place`,
@@ -34,9 +35,30 @@ export class CollectionService {
     );
   }
 
+  placeAllStickersFromAlbum(albumId: string) {
+    return this.http.patch<ApiResponse<any>>(
+      `${this.apiUrl}/album/${albumId}/place-all`,
+      {},
+    );
+  }
+
+  placeAllMyStickers() {
+    return this.http.patch<ApiResponse<any>>(
+      `${this.apiUrl}/stickers/place-all`,
+      {},
+    );
+  }
+
   countPendingAlbums() {
     return this.http.get<ApiResponse<number>>(
       `${this.apiUrl}/pending-albums-count`,
+    );
+  }
+
+  buyAlbum(albumId: string) {
+    return this.http.post<ApiResponse<any>>(
+      `${this.apiUrl}/albums/${albumId}/buy`,
+      {},
     );
   }
 }

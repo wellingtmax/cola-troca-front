@@ -1,0 +1,30 @@
+<div *ngIf="sticker" class="sticker-zoom-overlay" (click)="close.emit()">
+  <div
+    class="sticker-zoom-container"
+    [ngClass]="{
+      'zoom-rare': sticker.rarity === 'RARE',
+      'zoom-epic': sticker.rarity === 'EPIC',
+      'zoom-legendary': sticker.rarity === 'LEGENDARY'
+    }"
+    (click)="$event.stopPropagation()"
+  >
+    <button class="zoom-close-button" type="button" (click)="close.emit()">×</button>
+
+    <div
+      *ngIf="sticker.rarity === 'EPIC' || sticker.rarity === 'LEGENDARY'"
+      class="zoom-holo-effect"
+    ></div>
+
+    <img [src]="sticker.imageUrl" [alt]="sticker.name" class="zoom-sticker-image" />
+
+    <div class="zoom-sticker-info">
+      <span> Nº {{ sticker.number }} </span>
+      <h2>
+        {{ sticker.name }}
+      </h2>
+      <strong>
+        {{ rarityLabel }}
+      </strong>
+    </div>
+  </div>
+</div>

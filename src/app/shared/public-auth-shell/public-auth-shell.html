@@ -1,0 +1,247 @@
+<div class="public-auth-page">
+
+  <!-- HEADER -->
+
+  <header class="public-auth-header">
+
+    <a
+      routerLink="/home"
+      class="public-auth-logo"
+    >
+      <span class="logo-icon">
+        C&T
+      </span>
+
+      <div>
+        <strong>
+          Cola&Troca
+        </strong>
+
+        <small>
+          Álbum digital colecionável
+        </small>
+      </div>
+    </a>
+
+    <nav class="public-auth-nav">
+
+      <a
+        routerLink="/home"
+        class="nav-link"
+      >
+        Home
+      </a>
+
+      <a
+        routerLink="/login"
+        class="nav-link"
+        [class.active]="activePage === 'login'"
+      >
+        Entrar
+      </a>
+
+      <a
+        routerLink="/register"
+        class="nav-button"
+        [class.active]="activePage === 'register'"
+      >
+        Cadastrar
+      </a>
+
+    </nav>
+
+  </header>
+
+  <!-- CONTEÚDO -->
+
+  <main class="public-auth-main">
+
+    <!-- LADO VISUAL -->
+
+    <section class="public-auth-visual">
+
+      <div class="visual-badge">
+        Plataforma colecionável digital
+      </div>
+
+      <h1>
+        Colecione álbuns, abra packs e troque figurinhas.
+      </h1>
+
+      <p>
+        Uma experiência digital premium para colecionadores, com álbuns
+        interativos, níveis, XP, trocas e recompensas.
+      </p>
+
+      <div class="visual-showcase">
+
+        <div class="showcase-card album-card">
+          <img
+            src="assets/albums/brasileirao-legends-2026.png"
+            alt="Álbum digital"
+          />
+
+          <div>
+            <span>
+              Álbum digital
+            </span>
+
+            <strong>
+              Complete sua coleção
+            </strong>
+          </div>
+        </div>
+
+        <div class="showcase-card pack-card">
+          <img
+            src="assets/packs/pack-premium.png"
+            alt="Pack de figurinhas"
+          />
+
+          <div>
+            <span>
+              Packs premium
+            </span>
+
+            <strong>
+              Abra e evolua
+            </strong>
+          </div>
+        </div>
+
+        <div class="showcase-card level-card">
+
+          <div class="level-icon">
+            XP
+          </div>
+
+          <div>
+            <span>
+              Níveis
+            </span>
+
+            <strong>
+              Ganhe recompensas
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="visual-metrics">
+
+        <div>
+          <strong>
+            3D
+          </strong>
+
+          <span>
+            Álbum interativo
+          </span>
+        </div>
+
+        <div>
+          <strong>
+            XP
+          </strong>
+
+          <span>
+            Sistema de níveis
+          </span>
+        </div>
+
+        <div>
+          <strong>
+            C&T
+          </strong>
+
+          <span>
+            Trocas inteligentes
+          </span>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- FORMULÁRIO -->
+
+    <section class="public-auth-form-area">
+
+      <div class="auth-form-card">
+
+        <div class="auth-form-header">
+
+          <span>
+            Cola&Troca
+          </span>
+
+          <h2>
+            {{ pageTitle }}
+          </h2>
+
+          <p>
+            {{ pageSubtitle }}
+          </p>
+
+        </div>
+
+        <ng-content></ng-content>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer class="public-auth-footer">
+
+    <div>
+      <strong>
+        Cola&Troca
+      </strong>
+
+      <p>
+        Versão 0.0.01 • Plataforma digital colecionável
+      </p>
+    </div>
+
+    <div class="footer-right">
+
+      <span>
+        Desenvolvido por JS-TECH.
+      </span>
+
+      <div class="footer-socials">
+
+        <a
+          href="#"
+          aria-label="Instagram"
+        >
+          <i class="fa-brands fa-instagram"></i>
+        </a>
+
+        <a
+          href="#"
+          aria-label="Facebook"
+        >
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+
+        <a
+          href="#"
+          aria-label="Twitter/X"
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+</div>

@@ -1,8 +1,3 @@
-.stickers-page {
-  width: 100%;
-  color: var(--text-primary);
-}
-
 /* HEADER */
 
 .stickers-header {
@@ -12,19 +7,6 @@
   gap: 24px;
 
   margin-bottom: 34px;
-}
-
-.stickers-header h1 {
-  font-size: clamp(34px, 5vw, 56px);
-  font-weight: 900;
-  line-height: 1;
-  color: var(--text-primary);
-}
-
-.stickers-header p {
-  margin-top: 12px;
-  font-size: 18px;
-  color: var(--text-secondary);
 }
 
 .stickers-count {
@@ -43,73 +25,6 @@
   grid-template-columns: 2fr 1fr 1fr;
   gap: 16px;
   margin-bottom: 20px;
-}
-
-.filter-field {
-  position: relative;
-}
-
-.filter-field.wide {
-  grid-column: span 1;
-}
-
-.filter-field mat-icon {
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
-  pointer-events: none;
-}
-
-.filter-field input,
-.filter-field select {
-  width: 100%;
-  height: 56px;
-
-  padding: 0 18px 0 50px;
-
-  border-radius: 18px;
-  border: 1px solid var(--border-color);
-
-  background: var(--card-bg);
-  color: var(--text-primary);
-
-  font-size: 15px;
-  font-weight: 700;
-
-  outline: none;
-
-  transition: 0.25s ease;
-}
-
-.filter-field input:focus,
-.filter-field select:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(16,185,129,0.15);
-}
-
-.filter-field input::placeholder {
-  color: var(--text-secondary);
-}
-
-body.light-theme .filter-field input,
-body.light-theme .filter-field select {
-  background: #ffffff;
-  color: #111827;
-  border-color: rgba(124,58,237,0.18);
-}
-
-body.dark-theme .filter-field input,
-body.dark-theme .filter-field select {
-  background: #050505;
-  color: #ffffff;
-  border-color: #27272a;
-}
-
-.filter-field option {
-  background: var(--card-bg);
-  color: var(--text-primary);
 }
 
 /* QUICK FILTERS */
@@ -156,13 +71,7 @@ body.dark-theme .filter-field select {
 .stickers-loading {
   min-height: 320px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: var(--text-secondary);
   font-size: 20px;
-  font-weight: 800;
 }
 
 .stickers-empty {
@@ -170,26 +79,13 @@ body.dark-theme .filter-field select {
 
   border-radius: 28px;
 
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  text-align: center;
-
   padding: 40px;
-
-  box-shadow: var(--shadow-soft);
 }
 
 .stickers-empty mat-icon {
   font-size: 64px;
   width: 64px;
   height: 64px;
-  color: var(--accent);
   margin-bottom: 18px;
 }
 
@@ -197,10 +93,6 @@ body.dark-theme .filter-field select {
   font-size: 32px;
   font-weight: 900;
   margin-bottom: 10px;
-}
-
-.stickers-empty p {
-  color: var(--text-secondary);
 }
 
 /* GRID */
@@ -475,18 +367,10 @@ body.dark-theme .filter-field select {
 }
 
 .sticker-modal-overlay {
-  position: fixed;
-  inset: 0;
   z-index: 9999;
 
   background: rgba(0,0,0,0.82);
   backdrop-filter: blur(10px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 24px;
 }
 
 .sticker-modal {
@@ -501,10 +385,6 @@ body.dark-theme .filter-field select {
 
   border-radius: 24px;
 
-  background: var(--card-bg);
-  color: var(--text-primary);
-
-  border: 1px solid var(--border-color);
 }
 
 .sticker-modal-img {
@@ -667,18 +547,10 @@ body.light-theme .modal-close {
   background: #111827;
 }
 .confirm-modal-overlay {
-  position: fixed;
-  inset: 0;
   z-index: 9999;
 
   background: rgba(0,0,0,0.82);
   backdrop-filter: blur(10px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 24px;
 }
 
 .confirm-modal {
@@ -688,11 +560,6 @@ body.light-theme .modal-close {
   padding: 34px;
 
   border-radius: 26px;
-
-  background: var(--card-bg);
-  color: var(--text-primary);
-
-  border: 1px solid var(--border-color);
 
   text-align: center;
 

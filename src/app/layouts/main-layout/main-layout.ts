@@ -10,14 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    Sidebar,
-    Header,
-    AlertContainer,
-    CommonModule,
-    MatIconModule
-  ],
+  imports: [RouterOutlet, Sidebar, Header, AlertContainer, CommonModule, MatIconModule],
   templateUrl: './main-layout.html',
   styleUrl: './main-layout.css',
 })

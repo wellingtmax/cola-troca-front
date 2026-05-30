@@ -22,6 +22,25 @@
 
     <div class="chat-main">
 
+      <div class="chat-search-box">
+
+        <div class="chat-search-input">
+          <mat-icon>search</mat-icon>
+
+          <input [(ngModel)]="chatSearchTerm" placeholder="Buscar mensagens, nickname, @menção ou ID de troca..."
+            (keyup.enter)="searchMessages()" />
+
+          <button *ngIf="chatSearchTerm" type="button" (click)="clearChatSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <button type="button" class="chat-search-button" (click)="searchMessages()">
+          {{ searchingMessages ? 'Buscando...' : 'Buscar' }}
+        </button>
+
+      </div>
+
       <!-- COMPOSER -->
 
       <div class="chat-composer">
@@ -46,9 +65,9 @@
 
         <div class="emoji-row">
 
-          <button (click)="addEmoji('😀')">😀</button>
-          <button (click)="addEmoji('🔥')">🔥</button>
-          <button (click)="addEmoji('👏')">👏</button>
+          <button (click)="addEmoji('👍')">👍</button>
+          <button (click)="addEmoji('😎')">😎</button>
+          <button (click)="addEmoji('✔')">✔</button>
           <button (click)="addEmoji('⚽')">⚽</button>
           <button (click)="addEmoji('🏆')">🏆</button>
           <button (click)="addEmoji('💎')">💎</button>
@@ -71,15 +90,75 @@
 
         <div class="composer-tools">
 
-          <button disabled>
+          <!-- <button disabled>
             <mat-icon>image</mat-icon>
             Fotos em breve
+          </button> -->
+
+          <button type="button" (click)="toggleMentionBox()" [class.active]="showMentionBox">
+            <mat-icon>alternate_email</mat-icon>
+            Marcar alguém
           </button>
 
-          <button disabled>
-            <mat-icon>alternate_email</mat-icon>
-            Marcar em breve
-          </button>
+        </div>
+        <div *ngIf="showMentionBox" class="mention-box">
+
+          <div class="mention-box-header">
+            <div>
+              <strong>
+                Marcar colecionador
+              </strong>
+
+              <span>
+                Escolha um amigo para inserir @menção na mensagem.
+              </span>
+            </div>
+
+            <button type="button" (click)="closeMentionBox()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+
+          <div class="mention-search">
+            <mat-icon>search</mat-icon>
+
+            <input [(ngModel)]="mentionSearch" placeholder="Buscar por nome, nickname ou ID de troca..." />
+          </div>
+
+          <div *ngIf="mentionableUsers.length === 0" class="mention-empty">
+            Nenhum amigo encontrado para marcar.
+          </div>
+
+          <div *ngIf="mentionableUsers.length > 0" class="mention-list">
+
+            <button *ngFor="let user of mentionableUsers" type="button" class="mention-user"
+              (click)="insertMention(user)">
+
+              <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" [alt]="user.nickname || user.name" />
+
+              <div *ngIf="!user.avatarUrl" class="mention-avatar-fallback">
+                {{
+                user.nickname?.[0]
+                || user.name?.[0]
+                || 'U'
+                }}
+              </div>
+
+              <div>
+                <strong>
+                  {{ user.nickname || user.name }}
+                </strong>
+
+                <span>
+                  {{ user.tradeCode }}
+                </span>
+              </div>
+
+              <mat-icon>alternate_email</mat-icon>
+
+            </button>
+
+          </div>
 
         </div>
 
@@ -108,94 +187,21 @@
 
       <div *ngIf="!loading && messages.length > 0" class="messages-list">
 
-        <article *ngFor="let message of messages" class="message-card" [id]="'message-' + message.id"
-          [class.mine]="isMine(message)" [class.pinned]="message.isPinned"
-          [class.highlighted]="highlightedMessageId === message.id">
+        <app-chat-message
+          *ngFor="let message of messages"
+          [message]="message"
+          [mine]="isMine(message)"
+          [highlighted]="highlightedMessageId === message.id"
+          (openProfile)="openPublicProfile($event)"
+          (like)="toggleLike($event)"
+          (reply)="startReply($event)"
+          (mention)="mentionMessageUser($event)"
+          (friendRequest)="sendFriendRequest($event)"
+          (trade)="openTradeWithUser($event)"
+          (remove)="deleteMessage($event)"
+        />
 
-          <div class="message-avatar clickable" (click)="openPublicProfile(message.user.id)">
-
-            <img *ngIf="message.user.avatarUrl" [src]="message.user.avatarUrl"
-              [alt]="message.user.nickname || message.user.name" />
-
-            <div *ngIf="!message.user.avatarUrl" class="avatar-fallback">
-              {{ getInitialLetter(message) }}
-            </div>
-
-          </div>
-
-          <div class="message-body">
-
-            <header class="message-header">
-
-              <div>
-                <div class="message-user-line">
-                  <strong>
-                    {{ message.user.nickname || message.user.name }}
-                  </strong>
-
-                  <small class="message-user-status" [class.online]="isOnline(message.user.lastSeenAt)">
-                    {{ getLastSeenLabel(message.user.lastSeenAt) }}
-                  </small>
-                </div>
-
-                <span>
-                  {{ message.user.tradeCode }}
-                </span>
-              </div>
-
-              <small>
-                {{ message.createdAt | date:'dd/MM/yyyy HH:mm' }}
-              </small>
-
-            </header>
-
-            <div *ngIf="message.replyTo" class="message-reply">
-              <span>
-                Respondendo
-                {{ message.replyTo.user.nickname || message.replyTo.user.name }}
-              </span>
-
-              <p>
-                {{ message.replyTo.content }}
-              </p>
-            </div>
-
-            <p class="message-content">
-              {{ message.content }}
-            </p>
-
-            <footer class="message-actions">
-
-              <button [class.active]="message.likedByMe" (click)="toggleLike(message)">
-                <mat-icon>
-                  {{ message.likedByMe ? 'favorite' : 'favorite_border' }}
-                </mat-icon>
-
-                {{ message.likesCount }}
-              </button>
-
-              <button (click)="startReply(message)">
-                <mat-icon>reply</mat-icon>
-                Responder
-              </button>
-
-              <button *ngIf="!isMine(message)" (click)="sendFriendRequest(message.user.id)">
-                <mat-icon>person_add</mat-icon>
-                Fazer amigo
-              </button>
-
-              <button *ngIf="isMine(message)" class="danger" (click)="deleteMessage(message)">
-                <mat-icon>delete</mat-icon>
-                Apagar
-              </button>
-
-            </footer>
-
-          </div>
-
-        </article>
-
-        <div *ngIf="!loading && hasMoreMessages" class="load-more-messages">
+        <div *ngIf="hasMoreMessages" class="load-more-messages">
           <button type="button" [disabled]="loadingMoreMessages" (click)="loadMoreMessages()">
             <mat-icon>history</mat-icon>
 
@@ -353,7 +359,7 @@
                 {{ friend.tradeCode }}
               </span>
 
-              <small class="friend-status" [class.oline]="isOnline(friend.lastSeenAt)">
+              <small class="friend-status" [class.online]="isOnline(friend.lastSeenAt)">
                 {{ getLastSeenLabel(friend.lastSeenAt) }}
               </small>
             </div>
@@ -371,10 +377,7 @@
         <ul>
           <li>Chat por país</li>
           <li>Envio de fotos</li>
-          <li>Perfil público do amigo</li>
-          <li>Figurinhas em destaque</li>
           <li>Chat privado</li>
-          <li>Status online</li>
         </ul>
 
       </div>

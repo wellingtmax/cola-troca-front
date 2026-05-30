@@ -1,0 +1,23 @@
+cola & troca
+atualizaçoes futuras
+
+precisa atualizar tela de login
+quando faz cadastro ao termino ir para tela de login com alert de cadastro realizado com sucesso!
+
+tela de login e cadastro  => um header para ele com os botoes de entrar e cadastrar => no corpo fotos de albuns,
+packs, figurinhas, fotos de personagens,
+informaçoes no footer(como informação versão 0.0.01, quem produziu, direitos, instagran, twiter e facebook etc.)
+
+ajustar sidebar quando clicar em algo ele fechar
+
+ajustar valoes
+transfor valores reais em coins
+colocar uma aba de comprar cois
+
+1coin = 1,00 real
+
+arrumar colar dentro do album,
+qundo colo a figurinha o abul atualiza e manda a mesagem de figurinha colcada,
+
+rever o modal de notificação no sidebar, esta muito grande
+as notificaçoes nao some

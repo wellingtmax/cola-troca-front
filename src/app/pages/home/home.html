@@ -1,1 +1,204 @@
-<p>home works!</p>
+<div class="home-page">
+  <!-- HEADER -->
+
+  <header class="home-header">
+    <a routerLink="/home" class="home-logo">
+      <span class="logo-icon"> C&T </span>
+
+      <div>
+        <strong> Cola&Troca </strong>
+
+        <small> Álbum digital colecionável </small>
+      </div>
+    </a>
+
+    <nav class="home-nav">
+      <a routerLink="/login" class="nav-login"> Entrar </a>
+
+      <a routerLink="/register" class="nav-register"> Cadastrar </a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+
+  <main class="home-main">
+    <section class="hero-section">
+      <div class="hero-content">
+        <span class="hero-kicker"> Colecione. Troque. Complete. </span>
+
+        <h1>Sua plataforma digital de álbuns, packs e figurinhas.</h1>
+
+        <p>
+          O Cola&Troca transforma o colecionismo em uma experiência digital com álbuns
+          interativos,gaming, packs de figurinhas,chat global, trocas entre usuários, sistema de XP,
+          níveis e recompensas.
+        </p>
+
+        <div class="hero-actions">
+          <a routerLink="/register" class="primary-action"> Começar agora </a>
+
+          <a routerLink="/login" class="secondary-action"> Já tenho conta </a>
+        </div>
+
+        <div class="hero-metrics">
+          <div>
+            <strong> 3D </strong>
+
+            <span> Álbuns interativos </span>
+          </div>
+
+          <div>
+            <strong> XP </strong>
+
+            <span> Níveis de colecionador </span>
+          </div>
+
+          <div>
+            <strong> C&T </strong>
+
+            <span> Trocas inteligentes </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAROUSEL -->
+
+      <div class="hero-carousel">
+        <div class="carousel-card">
+          <div class="carousel-tag">
+            {{ currentSlide.tag }}
+          </div>
+
+          <div class="carousel-image-wrap">
+            <img [src]="currentSlide.imageUrl" [alt]="currentSlide.title" class="carousel-image" />
+
+            <div class="carousel-shine"></div>
+          </div>
+
+          <div class="carousel-info">
+            <span>
+              {{ currentSlide.subtitle }}
+            </span>
+
+            <h2>
+              {{ currentSlide.title }}
+            </h2>
+
+            <p>
+              {{ currentSlide.description }}
+            </p>
+          </div>
+
+          <div class="carousel-progress">
+            <div class="carousel-progress-fill" [style.width.%]="progressPercent"></div>
+          </div>
+        </div>
+
+        <div class="carousel-dots">
+          <button
+            *ngFor="let slide of slides; let index = index"
+            type="button"
+            [class.active]="index === currentSlideIndex"
+            (click)="goToSlide(index)"
+          ></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECURSOS -->
+
+    <section class="features-section">
+      <article class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>collections_bookmark</mat-icon>
+        </div>
+
+        <h3>Álbuns digitais</h3>
+
+        <p>Visualize seus álbuns com páginas interativas e acompanhe o progresso da coleção.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
+
+        <h3>Packs de figurinhas</h3>
+
+        <p>Abra packs, ganhe figurinhas por raridade e acumule repetidas para troca.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>swap_horiz</mat-icon>
+        </div>
+
+        <h3>Sistema de trocas</h3>
+
+        <p>Envie propostas, contrapropostas e complete seus álbuns com outros colecionadores.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>military_tech</mat-icon>
+        </div>
+
+        <h3>Níveis e XP</h3>
+
+        <p>Ganhe XP comprando packs, colando figurinhas, completando álbuns e realizando trocas.</p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>sports_esports</mat-icon>
+        </div>
+
+        <h3>Gaming BAFO BAFO</h3>
+
+        <p>
+          Jgue com amigos, um jogo viciante da sua infancia BAFO BAFO, e ganhe cartas e Xps para
+          subir seu nivel de colecionador.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">
+          <mat-icon>forum</mat-icon>
+        </div>
+
+        <h3>Chat Global</h3>
+
+        <p>
+          Converse com todo mundo no nosso chat global, com possibilidade maior aind de poder fazer
+          amigos,trocas,e chamar pra joar.
+        </p>
+      </article>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer class="home-footer">
+    <div>
+      <strong> Cola&Troca </strong>
+
+      <p>Versão 0.0.01 • Plataforma digital colecionável</p>
+    </div>
+
+    <div class="footer-links">
+      <span> Desenvolvido by J's-TECH. </span>
+
+      <a href="#" class="social-link" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+
+      <a href="#" class="social-link" aria-label="Facebook">
+        <i class="fa-brands fa-facebook-f"></i>
+      </a>
+
+      <a href="#" class="social-link" aria-label="Twitter/X">
+        <i class="fa-brands fa-x-twitter"></i>
+      </a>
+    </div>
+  </footer>
+</div>

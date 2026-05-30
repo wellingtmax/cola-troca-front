@@ -1,7 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 import { CollectionService } from '../../core/services/collection';
 import { ThemeService } from '../../core/services/theme';
@@ -13,16 +14,12 @@ import { AppNotification } from '../../interfaces/notification.interface';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    RouterLink,
-    RouterLinkActive,
-  ],
+  imports: [CommonModule, MatIconModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
-export class Sidebar implements OnInit {
+export class Sidebar implements OnInit, OnDestroy {
+  @Output() closeSidebar = new EventEmitter<void>();
 
   pendingAlbumsCount = 0;
 
@@ -30,7 +27,11 @@ export class Sidebar implements OnInit {
   unreadNotifications = 0;
   showNotifications = false;
 
-  dashboard: any = {}
+  dashboard: any = {};
+
+  get visibleNotifications() {
+    return this.notifications.filter((notification) => !notification.isRead);
+  }
 
   public readonly themeService = inject(ThemeService);
   private readonly notificationService = inject(NotificationService);
@@ -39,6 +40,9 @@ export class Sidebar implements OnInit {
   private readonly collectionService = inject(CollectionService);
 
   private readonly userService = inject(UserService);
+  private notificationInterval?: ReturnType<typeof setInterval>;
+  private presenceInterval?: ReturnType<typeof setInterval>;
+  private pendingRefreshSubscription?: Subscription;
 
   ngOnInit(): void {
     this.loadPendingAlbumsCount();
@@ -48,17 +52,30 @@ export class Sidebar implements OnInit {
 
     this.loadNotifications();
 
-    setInterval(() => {
+    this.notificationInterval = setInterval(() => {
       this.loadNotifications();
     }, 60000);
 
-    setInterval(() => {
+    this.presenceInterval = setInterval(() => {
       this.updatePresence();
     }, 60000);
 
-    this.collectionService.pendingRefresh$.subscribe(() => {
-      this.loadPendingAlbumsCount();
-    })
+    this.pendingRefreshSubscription =
+      this.collectionService.pendingRefresh$.subscribe(() => {
+        this.loadPendingAlbumsCount();
+      });
+  }
+
+  ngOnDestroy(): void {
+    if (this.notificationInterval) {
+      clearInterval(this.notificationInterval);
+    }
+
+    if (this.presenceInterval) {
+      clearInterval(this.presenceInterval);
+    }
+
+    this.pendingRefreshSubscription?.unsubscribe();
   }
 
   loadDashboard() {
@@ -82,7 +99,7 @@ export class Sidebar implements OnInit {
 
   logout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 
   toggleTheme() {
@@ -91,20 +108,23 @@ export class Sidebar implements OnInit {
 
   updatePresence() {
     this.userService.updatePresence().subscribe({
-      next: () => { },
-      error: () => { },
+      next: () => {},
+      error: () => {},
     });
   }
 
   loadNotifications() {
     this.notificationService.findMine().subscribe({
       next: (response) => {
-        this.notifications = response.data;
+        this.notifications = response.data || [];
 
         this.unreadNotifications =
-          response.data.filter((item) => !item.isRead).length;
+          this.notifications.filter((item) => !item.isRead).length;
       },
-      error: () => { },
+      error: () => {
+        this.notifications = [];
+        this.unreadNotifications = 0;
+      },
     });
   }
 
@@ -117,32 +137,36 @@ export class Sidebar implements OnInit {
       next: () => {
         notification.isRead = true;
 
-        this.unreadNotifications = Math.max(
-          0,
-          this.unreadNotifications - 1,
+        this.notifications = this.notifications.filter(
+          (item) => item.id !== notification.id,
         );
+
+        this.unreadNotifications =
+          this.notifications.filter((item) => !item.isRead).length;
+
+        this.showNotifications = false;
 
         if (notification.linkUrl) {
           this.router.navigateByUrl(notification.linkUrl);
         }
-
-        this.showNotifications = false;
       },
-      error: () => { },
+
+      error: () => {
+        this.alertNotificationError();
+      },
     });
   }
 
   markAllNotificationsAsRead() {
     this.notificationService.markAllAsRead().subscribe({
       next: () => {
-        this.notifications = this.notifications.map((item) => ({
-          ...item,
-          isRead: true,
-        }));
-
+        this.notifications = [];
         this.unreadNotifications = 0;
+        this.showNotifications = false;
       },
-      error: () => { },
+      error: () => {
+        this.alertNotificationError();
+      },
     });
   }
 
@@ -158,5 +182,13 @@ export class Sidebar implements OnInit {
     };
 
     return icons[type] || 'notifications';
+  }
+
+  alertNotificationError() {
+    console.error('Erro ao atualizar notificação.');
+  }
+
+  closeSidebarOnClick() {
+    this.closeSidebar.emit();
   }
 }

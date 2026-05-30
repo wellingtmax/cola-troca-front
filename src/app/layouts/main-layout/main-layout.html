@@ -15,6 +15,7 @@
     class="sidebar-drawer"
     [class.sidebar-open]="sidebarOpen"
     [class.sidebar-closed]="!sidebarOpen"
+    (closeSidebar)="closeSidebar()"
   ></app-sidebar>
 
   <div

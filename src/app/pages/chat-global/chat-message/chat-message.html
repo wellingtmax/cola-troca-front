@@ -1,0 +1,93 @@
+<article
+  class="message-card"
+  [id]="'message-' + message.id"
+  [class.mine]="mine"
+  [class.pinned]="message.isPinned"
+  [class.highlighted]="highlighted"
+>
+  <div class="message-avatar clickable" (click)="openProfile.emit(message.user.id)">
+    <img
+      *ngIf="message.user.avatarUrl"
+      [src]="message.user.avatarUrl"
+      [alt]="message.user.nickname || message.user.name"
+    />
+
+    <div *ngIf="!message.user.avatarUrl" class="avatar-fallback">
+      {{ getInitialLetter() }}
+    </div>
+  </div>
+
+  <div class="message-body">
+    <header class="message-header">
+      <div>
+        <div class="message-user-line">
+          <strong>
+            {{ message.user.nickname || message.user.name }}
+          </strong>
+
+          <small class="message-user-status" [class.online]="isOnline(message.user.lastSeenAt)">
+            {{ getLastSeenLabel(message.user.lastSeenAt) }}
+          </small>
+        </div>
+
+        <span>
+          {{ message.user.tradeCode }}
+        </span>
+      </div>
+
+      <small>
+        {{ message.createdAt | date:'dd/MM/yyyy HH:mm' }}
+      </small>
+    </header>
+
+    <div *ngIf="message.replyTo" class="message-reply">
+      <span>
+        Respondendo
+        {{ message.replyTo.user.nickname || message.replyTo.user.name }}
+      </span>
+
+      <p>
+        {{ message.replyTo.content }}
+      </p>
+    </div>
+
+    <p class="message-content">
+      {{ message.content }}
+    </p>
+
+    <footer class="message-actions">
+      <button [class.active]="message.likedByMe" (click)="like.emit(message)">
+        <mat-icon>
+          {{ message.likedByMe ? 'favorite' : 'favorite_border' }}
+        </mat-icon>
+
+        {{ message.likesCount }}
+      </button>
+
+      <button (click)="reply.emit(message)">
+        <mat-icon>reply</mat-icon>
+        Responder
+      </button>
+
+      <button *ngIf="!mine" type="button" (click)="mention.emit(message)">
+        <mat-icon>alternate_email</mat-icon>
+        Mencionar
+      </button>
+
+      <button *ngIf="!mine" (click)="friendRequest.emit(message.user.id)">
+        <mat-icon>person_add</mat-icon>
+        Fazer amigo
+      </button>
+
+      <button *ngIf="!mine" type="button" class="trade-action" (click)="trade.emit(message.user)">
+        <mat-icon>swap_horiz</mat-icon>
+        Propor troca
+      </button>
+
+      <button *ngIf="mine" class="danger" (click)="remove.emit(message)">
+        <mat-icon>delete</mat-icon>
+        Apagar
+      </button>
+    </footer>
+  </div>
+</article>

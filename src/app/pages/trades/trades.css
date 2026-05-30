@@ -1,32 +1,12 @@
-.trades-page {
-  width: 100%;
-  color: var(--text-primary);
-}
-
 .trades-header {
   margin-bottom: 34px;
-}
-
-.trades-header h1 {
-  font-size: clamp(34px, 5vw, 56px);
-  font-weight: 900;
-  line-height: 1;
-}
-
-.trades-header p {
-  margin-top: 12px;
-  font-size: 18px;
-  color: var(--text-secondary);
 }
 
 .trade-search-card,
 .collector-card,
 .trade-submit-card,
 .trade-section {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
   border-radius: 28px;
-  box-shadow: var(--shadow-soft);
 }
 
 .trade-search-card {
@@ -135,23 +115,13 @@
 
 .trade-loading {
   min-height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-weight: 800;
 }
 
 .trade-empty {
   min-height: 220px;
   border-radius: 22px;
   border: 1px dashed var(--border-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 12px;
-  text-align: center;
   color: var(--text-secondary);
   padding: 26px;
 }
@@ -164,7 +134,6 @@
   font-size: 54px;
   width: 54px;
   height: 54px;
-  color: var(--accent);
 }
 
 .trade-empty h3 {
@@ -316,18 +285,10 @@ body.light-theme .trade-item {
 
 /* model trade */
 .trade-modal-overlay {
-  position: fixed;
-  inset: 0;
   z-index: 9999;
 
   background: rgba(0,0,0,0.82);
   backdrop-filter: blur(10px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 24px;
 }
 
 .trade-modal {
@@ -340,11 +301,6 @@ body.light-theme .trade-item {
   padding: 32px;
 
   border-radius: 30px;
-
-  background: var(--card-bg);
-  color: var(--text-primary);
-
-  border: 1px solid var(--border-color);
 
   box-shadow:
     0 40px 80px rgba(0,0,0,0.45);
@@ -653,33 +609,43 @@ body.light-theme .trade-filters select {
   padding: 24px;
 }
 
-.trade-modal-card.common {
+.trade-modal-card.common,
+.trade-sticker-card.common {
   border: 2px solid #6b7280;
 }
 
-.trade-modal-card.rare {
+.trade-modal-card.rare,
+.trade-sticker-card.rare {
   border: 2px solid #2563eb;
 
   box-shadow:
     0 0 18px rgba(37,99,235,0.45);
 }
 
-.trade-modal-card.epic {
+.trade-modal-card.epic,
+.trade-sticker-card.epic {
   border: 2px solid #a855f7;
 
   box-shadow:
     0 0 22px rgba(168,85,247,0.55),
     0 0 50px rgba(168,85,247,0.25);
+}
+
+.trade-modal-card.epic {
 
   animation: epicGlow 2.8s infinite alternate;
 }
 
-.trade-modal-card.legendary {
+.trade-modal-card.legendary,
+.trade-sticker-card.legendary {
   border: 2px solid #f59e0b;
 
   box-shadow:
     0 0 24px rgba(245,158,11,0.75),
     0 0 60px rgba(245,158,11,0.35);
+}
+
+.trade-modal-card.legendary {
 
   animation: legendaryGlow 2s infinite alternate;
 }
@@ -744,29 +710,6 @@ body.light-theme .trade-filters select {
   }
 }
 
-.trade-sticker-card.common {
-  border-color: #6b7280;
-}
-
-.trade-sticker-card.rare {
-  border-color: #2563eb;
-  box-shadow: 0 0 18px rgba(37,99,235,0.45);
-}
-
-.trade-sticker-card.epic {
-  border-color: #a855f7;
-  box-shadow:
-    0 0 22px rgba(168,85,247,0.55),
-    0 0 50px rgba(168,85,247,0.25);
-}
-
-.trade-sticker-card.legendary {
-  border-color: #f59e0b;
-  box-shadow:
-    0 0 24px rgba(245,158,11,0.75),
-    0 0 60px rgba(245,158,11,0.35);
-}
-
 .counter-title-row {
   display: flex;
   align-items: center;
@@ -793,4 +736,151 @@ body.light-theme .trade-filters select {
 }
 .all {
   cursor: pointer;
+}
+
+/* =====================================================
+   MODAL DE TROCA - SEPARAÇÃO RECEBE / ENTREGA
+===================================================== */
+
+.trade-split-header {
+  margin: 28px 0 18px;
+
+  padding: 14px 16px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  border: 1px solid var(--border-color);
+}
+
+.trade-split-header span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.trade-split-header h3 {
+  margin: 0;
+
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.trade-split-header strong {
+  padding: 8px 12px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+.trade-split-header.receive {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.12),
+      rgba(59, 130, 246, 0.08)
+    );
+
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.trade-split-header.receive span,
+.trade-split-header.receive strong {
+  color: #10b981;
+}
+
+.trade-split-header.send {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(124, 58, 237, 0.12),
+      rgba(250, 204, 21, 0.08)
+    );
+
+  border-color: rgba(124, 58, 237, 0.35);
+}
+
+.trade-split-header.send span,
+.trade-split-header.send strong {
+  color: #7c3aed;
+}
+
+.receive-card {
+  outline: 3px solid rgba(16, 185, 129, 0.18);
+}
+
+.send-card {
+  outline: 3px solid rgba(124, 58, 237, 0.18);
+}
+
+.trade-empty-split {
+  margin-bottom: 24px;
+
+  padding: 16px;
+
+  border-radius: 16px;
+
+  border: 1px dashed var(--border-color);
+
+  color: var(--text-secondary);
+
+  font-weight: 800;
+
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.trade-modal-card.unavailable {
+  opacity: 0.45;
+  filter: grayscale(1);
+  border: 2px solid #ef4444 !important;
+  box-shadow: none !important;
+}
+
+.trade-modal-card.unavailable::before {
+  content: 'INDISPONÍVEL';
+
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  z-index: 5;
+
+  transform: translate(-50%, -50%) rotate(-14deg);
+
+  padding: 8px 12px;
+
+  border-radius: 999px;
+
+  background: rgba(239, 68, 68, 0.92);
+  color: white;
+
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+}
+
+.unavailable-label {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+  z-index: 6;
+
+  color: #fecaca !important;
+
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  font-style: normal;
 }

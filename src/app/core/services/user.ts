@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { PublicProfile } from '../../interfaces/public-profile.interface';
 import { ApiResponse } from '../../interfaces/api-response.interface';
+import { API_BASE_URL } from '../api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +12,7 @@ export class UserService {
 
   private readonly http = inject(HttpClient);
 
-  private readonly apiUrl =
-    'http://localhost:3000/api/users';
+  private readonly apiUrl = `${API_BASE_URL}/users`;
 
   profile() {
     return this.http.get<any>(

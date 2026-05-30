@@ -8,6 +8,7 @@ import { TradeService } from '../../core/services/trade';
 import { StickerService } from '../../core/services/sticker';
 import { AlertService } from '../../core/services/alert';
 import { AuthService } from '../../core/services/auth';
+import { UserLevelService } from '../../core/services/user-level';
 
 @Component({
   selector: 'app-trades',
@@ -26,6 +27,7 @@ export class Trades implements OnInit {
   private readonly alertService = inject(AlertService);
   private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
+  private readonly userLevelService = inject(UserLevelService);
 
   tradeCode = '';
   receiver: any = null;
@@ -219,15 +221,41 @@ export class Trades implements OnInit {
     });
   }
 
+  hasUnavailableTradeItem(trade: any): boolean {
+    return trade?.items?.some(
+      (item: any) => item.isAvailableForTrade === false,
+    ) || false;
+  }
+
   acceptTrade(trade: any) {
+    if (this.hasUnavailableTradeItem(trade)) {
+      this.alertService.warning(
+        'Esta troca possui figurinha sem repetida disponível. Solicite uma nova proposta.',
+      );
+
+      return;
+    }
+
     this.tradeService.acceptTrade(trade.id).subscribe({
-      next: () => {
-        this.alertService.success('Troca concluída!');
+      next: (response) => {
+        const xpEarned = response.data?.xpEarned || 100;
+
+        this.alertService.success(
+          'Troca concluída!',
+          `XP ganho: +${xpEarned}`,
+        );
+
+        this.userLevelService.refreshLevel();
+
         this.closeTradeDetails();
         this.loadData();
       },
-      error: () => {
-        this.alertService.error('Erro ao aceitar troca.');
+
+      error: (error) => {
+        this.alertService.error(
+          error?.error?.message ||
+          'Erro ao aceitar troca.',
+        );
       },
     });
   }
@@ -270,6 +298,10 @@ export class Trades implements OnInit {
   get filteredTradeStickers() {
     return this.myStickers
       .filter((sticker: any) => {
+        const isTradeable =
+          sticker.quantityDuplicate > 0 &&
+          !sticker.isPlaced;
+
         const matchesAlbum =
           !this.selectedAlbum ||
           sticker.albumName === this.selectedAlbum;
@@ -278,7 +310,7 @@ export class Trades implements OnInit {
           !this.selectedRarity ||
           sticker.rarity === this.selectedRarity;
 
-        return matchesAlbum && matchesRarity;
+        return isTradeable && matchesAlbum && matchesRarity;
       })
       .slice(0, this.selectedLimit);
   }
@@ -286,6 +318,10 @@ export class Trades implements OnInit {
   get modalFilteredTradeStickers() {
     return this.myStickers
       .filter((sticker: any) => {
+        const isTradeable =
+          sticker.quantityDuplicate > 0 &&
+          !sticker.isPlaced;
+
         const matchesAlbum =
           !this.modalSelectedAlbum ||
           sticker.albumName === this.modalSelectedAlbum;
@@ -294,7 +330,7 @@ export class Trades implements OnInit {
           !this.modalSelectedRarity ||
           sticker.rarity === this.modalSelectedRarity;
 
-        return matchesAlbum && matchesRarity;
+        return isTradeable && matchesAlbum && matchesRarity;
       })
       .slice(0, this.modalSelectedLimit);
   }
@@ -329,15 +365,107 @@ export class Trades implements OnInit {
     );
   }
 
-  getTradeStatusLabel(status: string) {
-  const labels: Record<string, string> = {
-    PENDING: 'Aguardando resposta',
-    COUNTERED: 'Contraproposta recebida',
-    ACCEPTED: 'Troca aceita',
-    REJECTED: 'Troca recusada',
-    CANCELED: 'Troca cancelada',
-  };
+  getCurrentUserId(): string {
+    return this.currentUser?.id || '';
+  }
 
-  return labels[status] || status;
-}
+  getItemsThatIWillReceive(trade: any) {
+    const currentUserId = this.getCurrentUserId();
+
+    if (!trade?.items || !currentUserId) {
+      return [];
+    }
+
+    return trade.items.filter(
+      (item: any) => item.toUserId === currentUserId,
+    );
+  }
+
+  getItemsThatIWillSend(trade: any) {
+    const currentUserId = this.getCurrentUserId();
+
+    if (!trade?.items || !currentUserId) {
+      return [];
+    }
+
+    return trade.items.filter(
+      (item: any) => item.fromUserId === currentUserId,
+    );
+  }
+
+  getTradePartnerName(trade: any): string {
+    const currentUserId = this.getCurrentUserId();
+
+    if (!trade) {
+      return 'Outro colecionador';
+    }
+
+    const partner =
+      trade.senderId === currentUserId || trade.sender?.id === currentUserId
+        ? trade.receiver
+        : trade.sender;
+
+    return (
+      partner?.nickname ||
+      partner?.name ||
+      'Outro colecionador'
+    );
+  }
+  getTradeStatusLabel(status: string) {
+    const labels: Record<string, string> = {
+      PENDING: 'Aguardando resposta',
+      COUNTERED: 'Contraproposta recebida',
+      ACCEPTED: 'Troca aceita',
+      REJECTED: 'Troca recusada',
+      CANCELED: 'Troca cancelada',
+    };
+
+    return labels[status] || status;
+  }
+
+  isTradeSender(trade: any): boolean {
+    const currentUserId = this.getCurrentUserId();
+
+    return (
+      trade?.senderId === currentUserId ||
+      trade?.sender?.id === currentUserId
+    );
+  }
+
+  isTradeReceiver(trade: any): boolean {
+    const currentUserId = this.getCurrentUserId();
+
+    return (
+      trade?.receiverId === currentUserId ||
+      trade?.receiver?.id === currentUserId
+    );
+  }
+
+  canAcceptTrade(trade: any): boolean {
+    return (
+      trade?.status === 'COUNTERED' &&
+      this.isTradeSender(trade)
+    );
+  }
+
+  canCounterTrade(trade: any): boolean {
+    return (
+      trade?.status === 'PENDING' &&
+      this.isTradeReceiver(trade)
+    );
+  }
+
+  canRejectTrade(trade: any): boolean {
+    return (
+      trade?.status === 'PENDING' &&
+      this.isTradeReceiver(trade)
+    );
+  }
+
+  canCancelTrade(trade: any): boolean {
+    return (
+      trade?.status === 'PENDING' &&
+      this.isTradeSender(trade)
+    );
+  }
 }

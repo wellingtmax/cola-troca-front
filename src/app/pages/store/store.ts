@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 
 import { AlbumService } from '../../core/services/album';
 import { AlertService } from '../../core/services/alert';
-import { StoreService } from '../../core/services/store';
+import { CollectionService } from '../../core/services/collection';
+import { UserLevelService } from '../../core/services/user-level';
 
 import { Album } from '../../interfaces/album.interface';
 
@@ -27,15 +28,17 @@ export class Store implements OnInit {
 
   private readonly albumService = inject(AlbumService);
   private readonly alertService = inject(AlertService);
-  private readonly storeService = inject(StoreService);
-// =======================BUSCAR
+  private readonly collectionService = inject(CollectionService);
+  private readonly userLevelService = inject(UserLevelService);
+
+  // =======================BUSCAR
   searchTerm = '';
   selectedCompany = '';
   selectedCategory = '';
 
   companies: string[] = [];
   categories: string[] = [];
-// ==============================
+  // ==============================
   albums: Album[] = [];
 
   loading = true;
@@ -65,8 +68,6 @@ export class Store implements OnInit {
           'Álbuns carregados!',
           `${this.albums.length} álbum(ns) encontrado(s).`,
         );
-
-        console.log(this.albums);
       },
 
       error: (error) => {
@@ -84,13 +85,20 @@ export class Store implements OnInit {
   }
 
   buyAlbum(albumId: string) {
-    this.storeService.buyAlbum(albumId).subscribe({
+    this.collectionService.buyAlbum(albumId).subscribe({
       next: (response) => {
+        const data = response.data;
+
         this.alertService.success(
           'Álbum comprado!',
-          response.message,
+          `Coins gastos: ${data.coinsSpent} | XP ganho: +${data.xpEarned}`,
         );
+
+        this.userLevelService.refreshLevel();
+
+        this.loadAlbums();
       },
+
       error: (error) => {
         this.alertService.error(
           'Erro ao comprar álbum',
@@ -105,17 +113,17 @@ export class Store implements OnInit {
       const search = this.searchTerm.toLowerCase();
 
       const matchesSearch =
-      !search ||
-      album.themeName?.toLowerCase().includes(search) ||
-      album.company?.toLowerCase().includes(search) ||
-      album.category?.toLowerCase().includes(search) ||
-      album.collection?.toLowerCase().includes(search);
+        !search ||
+        album.themeName?.toLowerCase().includes(search) ||
+        album.company?.toLowerCase().includes(search) ||
+        album.category?.toLowerCase().includes(search) ||
+        album.collection?.toLowerCase().includes(search);
 
       const matchesCompany =
-      !this.selectedCategory || album.company === this.selectedCompany;
+        !this.selectedCompany || album.company === this.selectedCompany;
 
       const matchesCategory =
-      !this.selectedCategory || album.category === this.selectedCategory;
+        !this.selectedCategory || album.category === this.selectedCategory;
 
       return matchesSearch && matchesCompany && matchesCategory;
     });

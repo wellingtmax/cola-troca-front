@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { StickerService } from '../../core/services/sticker';
 import { AlertService } from '../../core/services/alert';
 import { CollectionService } from '../../core/services/collection';
+import { UserLevelService } from '../../core/services/user-level';
 
 @Component({
   selector: 'app-stickers',
@@ -25,6 +26,7 @@ export class Stickers implements OnInit {
   private readonly stickerService = inject(StickerService);
   private readonly alertService = inject(AlertService);
   private readonly collectionService = inject(CollectionService)
+  private readonly userLevelService = inject(UserLevelService)
 
   loading = true;
 
@@ -160,68 +162,140 @@ export class Stickers implements OnInit {
     this.selectedSticker = null;
   }
 
-  placeSticker(sticker: any) {
+  private getRealStickerId(sticker: any): string {
+    return (
+      sticker?.stickerId ||
+      sticker?.sticker?.id ||
+      sticker?.id
+    );
+  }
 
-    this.stickerService.placeSticker(sticker.id).subscribe({
-      next: () => {
+  placeSticker(sticker: any) {
+    const stickerId = this.getRealStickerId(sticker);
+
+    if (!sticker.albumId || !stickerId) {
+      this.alertService.error(
+        'Não foi possível identificar a figurinha ou o álbum.',
+      );
+
+      return;
+    }
+
+    this.collectionService.placeSticker(
+      sticker.albumId,
+      stickerId,
+    ).subscribe({
+      next: (response) => {
         sticker.isPlaced = true;
 
+        if (this.selectedSticker?.id === sticker.id) {
+          this.selectedSticker.isPlaced = true;
+        }
+
+        this.collectionService.refreshPendingCount();
+        this.userLevelService.refreshLevel();
+
+        const xpEarned = response.data?.xpEarned || 0;
+        const stickerXpEarned = response.data?.stickerXpEarned || 0;
+        const albumCompletionReward = response.data?.albumCompletionReward;
+
+        let message = `XP ganho: +${xpEarned}`;
+
+        if (albumCompletionReward) {
+          message =
+            `Figurinha: +${stickerXpEarned} XP | Álbum completo: +${albumCompletionReward.xpEarned} XP | Total: +${xpEarned} XP`;
+        }
+
         this.alertService.success(
-          'Figurinha colada com sucesso!',
+          albumCompletionReward
+            ? 'Álbum completo!'
+            : 'Figurinha colada com sucesso!',
+          message,
         );
       },
 
-      error: () => {
+      error: (error) => {
         this.alertService.error(
-          'Error ao colar figurinha.'
+          'Erro ao colar figurinha.',
+          error?.error?.message || 'Não foi possível colar a figurinha.',
         );
       },
     });
   }
 
   showPlaceAllModal = false;
-pendingPlaceTotal = 0;
+  pendingPlaceTotal = 0;
 
-openPlaceAllModal() {
-  this.pendingPlaceTotal = this.stickers.filter(
-    (sticker: any) => !sticker.isPlaced,
-  ).length;
+  openPlaceAllModal() {
+    this.pendingPlaceTotal = this.stickers.filter(
+      (sticker: any) =>
+        !sticker.isPlaced &&
+        sticker.quantityOwned > 0,
+    ).length;
 
-  if (this.pendingPlaceTotal === 0) {
-    this.alertService.warning('Nenhuma figurinha pendente.');
-    return;
+    if (this.pendingPlaceTotal === 0) {
+      this.alertService.warning('Nenhuma figurinha pendente.');
+      return;
+    }
+
+    this.showPlaceAllModal = true;
   }
 
-  this.showPlaceAllModal = true;
-}
+  closePlaceAllModal() {
+    this.showPlaceAllModal = false;
+  }
 
-closePlaceAllModal() {
-  this.showPlaceAllModal = false;
-}
+  confirmPlaceAllStickers() {
+    this.collectionService.placeAllMyStickers()
+      .subscribe({
+        next: (response: any) => {
+          this.stickers.forEach((sticker: any) => {
+            if (
+              !sticker.isPlaced &&
+              sticker.quantityOwned > 0
+            ) {
+              sticker.isPlaced = true;
+            }
+          });
 
-confirmPlaceAllStickers() {
-  this.stickerService.placeAllStickers()
-    .subscribe({
-      next: (response: any) => {
-        this.stickers.forEach((sticker: any) => {
-          sticker.isPlaced = true;
-        });
+          this.collectionService.refreshPendingCount();
+          this.userLevelService.refreshLevel();
 
-        this.collectionService.refreshPendingCount();
+          this.showPlaceAllModal = false;
 
-        this.showPlaceAllModal = false;
+          const totalPlaced = response.data?.totalPlaced || 0;
+          const xpEarned = response.data?.xpEarned || 0;
+          const stickerXpEarned = response.data?.stickerXpEarned || 0;
+          const albumCompletionRewards =
+            response.data?.albumCompletionRewards || [];
 
-        this.alertService.success(
-          response.message || 'Figurinhas coladas!',
+          const albumBonusXp = albumCompletionRewards.reduce(
+            (total: number, reward: any) => total + reward.xpEarned,
+            0,
+          );
 
-        );
-      },
+          let message =
+            `${totalPlaced} figurinha(s) colada(s) | XP ganho: +${xpEarned}`;
 
-      error: () => {
-        this.alertService.error(
-          'Erro ao colar figurinhas.',
-        );
-      },
-    });
-}
+          if (albumCompletionRewards.length > 0) {
+            message =
+              `${totalPlaced} figurinha(s) colada(s) | Figurinhas: +${stickerXpEarned} XP | Bônus de álbum completo: +${albumBonusXp} XP | Total: +${xpEarned} XP`;
+          }
+
+          this.alertService.success(
+            albumCompletionRewards.length > 0
+              ? 'Álbum completo!'
+              : 'Figurinhas coladas!',
+            message,
+          );
+        },
+
+        error: (error) => {
+          this.alertService.error(
+            'Erro ao colar figurinhas.',
+            error?.error?.message || 'Não foi possível colar as figurinhas.',
+          );
+        },
+      });
+  }
 }

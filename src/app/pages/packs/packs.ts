@@ -50,7 +50,6 @@ export class Packs {
   loadPacks() {
     this.packService.findAll().subscribe({
       next: (response) => {
-        console.log('PACKS DO BANCO:', response.data);
         this.packs = response.data;
       },
       error: () => {
